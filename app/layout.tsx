@@ -17,7 +17,7 @@ export const metadata: Metadata = {
   description: "Asli Tenggirinya, Asli Enaknya. Pesan pempek frozen fresh langsung dari Cimahi.",
 };
 
-// KODE BARU: Mengunci layar HP agar tidak auto-zoom/kegedean
+// MENGUNCI LAYAR AGAR TIDAK AUTO-ZOOM DI IPHONE/MOBILE
 export const viewport: Viewport = {
   width: "device-width",
   initialScale: 1,
