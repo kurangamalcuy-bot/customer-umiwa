@@ -26,6 +26,7 @@ export default function CustomerLandingPage() {
   const [deliveryMode, setDeliveryMode] = useState('pickup'); 
   const [courier, setCourier] = useState('ahsan'); // 'ahsan', 'umiwa', 'gosend'
   const [addPacking, setAddPacking] = useState(false);
+  const [packingOption, setPackingOption] = useState('pouch'); // 'pouch' atau 'cooler'
   
   // State Alamat Lengkap
   const [address, setAddress] = useState({
@@ -49,7 +50,7 @@ export default function CustomerLandingPage() {
   const CATALOG = [
     { 
       name: "Pempek Isi 20", 
-      price: 20000, 
+      price: 35000, 
       img: "/pempek-20.jpg", 
       desc: "Cocok banget buat stok cemilan sekeluarga atau kumpul bareng teman. Makan rame-rame makin seru!",
       media: [
@@ -250,7 +251,10 @@ export default function CustomerLandingPage() {
       if (courier === 'umiwa') shippingFee = 9000;
   }
   
-  const packingFee = addPacking ? 2500 : 0;
+  let packingFee = 0;
+  if (addPacking) {
+      packingFee = packingOption === 'pouch' ? 2500 : 3000;
+  }
   const grandTotal = totalCart + shippingFee + packingFee;
 
   // FUNGSI CHECKOUT KE WHATSAPP
@@ -278,7 +282,11 @@ export default function CustomerLandingPage() {
         }
     }
 
-    message += `Tambahan Packing: ${addPacking ? '📦 Ya (+2.500)' : '❌ Tidak'}\n\n`;
+    let packingText = '❌ Tidak';
+    if (addPacking) {
+        packingText = packingOption === 'pouch' ? '📦 Thermal Pouch (+Rp2.500)' : '🛍️ Thermal Cooler Bag (+Rp3.000)';
+    }
+    message += `Tambahan Packing: ${packingText}\n\n`;
     message += `*Rincian Pesanan:*\n`;
     
     cart.forEach(item => {
@@ -899,7 +907,7 @@ export default function CustomerLandingPage() {
                             <span className={`w-3 h-3 md:w-4 md:h-4 rounded-full border-2 mr-2 flex items-center justify-center ${courier === 'ahsan' ? 'border-emerald-500' : 'border-slate-300'}`}>
                               {courier === 'ahsan' && <span className="w-1.5 h-1.5 md:w-2 md:h-2 rounded-full bg-emerald-500"></span>}
                             </span>
-                            <span className="font-bold text-[11px] md:text-sm text-slate-800">Ahsan Xpress Sameday (Rp 12rb)</span>
+                            <span className="font-bold text-[11px] md:text-sm text-slate-800">Ahsan Xpress - Sameday (Rp 12rb)</span>
                           </div>
                           <p className="text-[10px] text-slate-500 pl-6 leading-relaxed">Batas order jam 10 pagi, pengiriman jam 15.00 sampai selesai. Order di atas jam batas order akan dikirim besoknya.</p>
                         </label>
@@ -910,9 +918,9 @@ export default function CustomerLandingPage() {
                             <span className={`w-3 h-3 md:w-4 md:h-4 rounded-full border-2 mr-2 flex items-center justify-center ${courier === 'umiwa' ? 'border-emerald-500' : 'border-slate-300'}`}>
                               {courier === 'umiwa' && <span className="w-1.5 h-1.5 md:w-2 md:h-2 rounded-full bg-emerald-500"></span>}
                             </span>
-                            <span className="font-bold text-[11px] md:text-sm text-slate-800">Kurir Umiwa Instant (Rp 9rb)</span>
+                            <span className="font-bold text-[11px] md:text-sm text-slate-800">Kurir Umiwa - Instant (Rp 9rb)</span>
                           </div>
-                          <p className="text-[10px] text-slate-500 pl-6 leading-relaxed">Khusus pengiriman di Cimahi. Pesanan diantar langsung saat ini juga oleh kurir dari Pempek Umiwa.</p>
+                          <p className="text-[10px] text-slate-500 pl-6 leading-relaxed">Khusus pengiriman di Cimahi saja. Pesanan diantar langsung saat ini juga oleh kurir dari Pempek Umiwa.</p>
                         </label>
 
                         <label className={`block p-2.5 md:p-3 border rounded-lg md:rounded-xl cursor-pointer ${courier === 'gosend' ? 'bg-emerald-50 border-emerald-500' : 'bg-white border-slate-200'}`}>
@@ -948,17 +956,44 @@ export default function CustomerLandingPage() {
 
                   {/* TAMBAHAN PACKING */}
                   <div className="pt-2">
-                    <label className="text-[9px] md:text-[10px] font-black text-slate-500 uppercase block mb-1.5 md:mb-2">Tambahan Packing (Thermal Bag)?</label>
+                    <label className="text-[9px] md:text-[10px] font-black text-slate-500 uppercase block mb-1.5 md:mb-2">Tambahan Packing Aman?</label>
                     <div className="flex gap-2 md:gap-3">
-                      <label className={`flex-1 p-2 md:p-3 border rounded-lg md:rounded-xl text-[10px] md:text-xs font-bold text-center cursor-pointer ${addPacking === true ? 'bg-emerald-50 border-emerald-500 text-emerald-700' : 'bg-white text-slate-500'}`}>
+                      <label className={`flex-1 p-2 md:p-3 border rounded-lg md:rounded-xl text-[10px] md:text-xs font-bold text-center cursor-pointer transition-colors ${addPacking === true ? 'bg-emerald-50 border-emerald-500 text-emerald-700' : 'bg-white text-slate-500 hover:bg-slate-50'}`}>
                         <input type="radio" className="hidden" checked={addPacking === true} onChange={() => setAddPacking(true)} />
-                        📦 Ya (+2,5rb)
+                        📦 Ya
                       </label>
-                      <label className={`flex-1 p-2 md:p-3 border rounded-lg md:rounded-xl text-[10px] md:text-xs font-bold text-center cursor-pointer ${addPacking === false ? 'bg-rose-50 border-rose-500 text-rose-700' : 'bg-white text-slate-500'}`}>
+                      <label className={`flex-1 p-2 md:p-3 border rounded-lg md:rounded-xl text-[10px] md:text-xs font-bold text-center cursor-pointer transition-colors ${addPacking === false ? 'bg-rose-50 border-rose-500 text-rose-700' : 'bg-white text-slate-500 hover:bg-slate-50'}`}>
                         <input type="radio" className="hidden" checked={addPacking === false} onChange={() => setAddPacking(false)} />
                         ❌ Tidak
                       </label>
                     </div>
+
+                    {/* SUB-MENU PILIHAN PACKING (MUNCUL JIKA KLIK "YA") */}
+                    {addPacking && (
+                      <div className="mt-3 grid grid-cols-2 gap-2 md:gap-3 animate-in slide-in-from-top-2">
+                        
+                        {/* Pilihan 1: POUCH */}
+                        <label className={`border rounded-lg md:rounded-xl p-3 cursor-pointer flex flex-col items-center text-center transition-all ${packingOption === 'pouch' ? 'border-emerald-500 bg-emerald-50 shadow-sm' : 'border-slate-200 bg-white hover:bg-slate-50'}`}>
+                          <input type="radio" className="hidden" checked={packingOption === 'pouch'} onChange={() => setPackingOption('pouch')} />
+                          <img src="/foto-pouch.jpg" alt="Thermal Pouch" className="w-16 h-16 md:w-20 md:h-20 object-cover rounded-lg mb-2 bg-slate-100" onError={(e:any) => e.target.src = 'https://via.placeholder.com/80?text=Foto+Pouch'} />
+                          <span className="text-[10px] md:text-xs font-bold text-slate-800 leading-tight">Thermal Pouch</span>
+                          {/* KETERANGAN MAKSIMAL PACK */}
+                          <span className="text-[9px] md:text-[10px] text-slate-400 mt-0.5">Maksimal cukup untuk 2 pack</span>
+                          <span className="text-[9px] md:text-[10px] font-black text-emerald-600 mt-1">+ Rp 2.500</span>
+                        </label>
+                        
+                        {/* Pilihan 2: COOLER BAG */}
+                        <label className={`border rounded-lg md:rounded-xl p-3 cursor-pointer flex flex-col items-center text-center transition-all ${packingOption === 'cooler' ? 'border-emerald-500 bg-emerald-50 shadow-sm' : 'border-slate-200 bg-white hover:bg-slate-50'}`}>
+                          <input type="radio" className="hidden" checked={packingOption === 'cooler'} onChange={() => setPackingOption('cooler')} />
+                          <img src="/foto-cooler.jpg" alt="Thermal Cooler Bag" className="w-16 h-16 md:w-20 md:h-20 object-cover rounded-lg mb-2 bg-slate-100" onError={(e:any) => e.target.src = 'https://via.placeholder.com/80?text=Foto+Cooler'} />
+                          <span className="text-[10px] md:text-xs font-bold text-slate-800 leading-tight">Thermal Cooler Bag</span>
+                          {/* KETERANGAN MAKSIMAL PACK */}
+                          <span className="text-[9px] md:text-[10px] text-slate-400 mt-0.5">Maksimal cukup untuk 5 pack</span>
+                          <span className="text-[9px] md:text-[10px] font-black text-emerald-600 mt-1">+ Rp 3.000</span>
+                        </label>
+
+                      </div>
+                    )}
                   </div>
 
                 </div>
