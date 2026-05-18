@@ -56,7 +56,7 @@ export default function CustomerLandingPage() {
       media: [
         { type: 'image', url: '/pempek-20.jpg' },
         { type: 'image', url: '/pempek-20-2.jpg' },
-        { type: 'video', embedCode: `<iframe width="560" height="315" src="https://www.youtube.com/embed/2FPx1_CUzYQ" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>` } 
+        { type: 'video', embedCode: `<iframe width="560" height="315" src="https://www.youtube.com/embed/dtzh8Cd15Ao" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>` }
       ]
     },
     { 
@@ -67,7 +67,7 @@ export default function CustomerLandingPage() {
       media: [
         { type: 'image', url: '/pempek-15.jpg' },
         { type: 'image', url: '/pempek-15-2.jpg' },
-        { type: 'video', embedCode: `<iframe width="560" height="315" src="https://www.youtube.com/embed/2FPx1_CUzYQ" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>` }
+        { type: 'video', embedCode: `<iframe width="560" height="315" src="https://www.youtube.com/embed/K8wCt9dprfY" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>` }
       ]
     },
     { 
@@ -78,7 +78,7 @@ export default function CustomerLandingPage() {
       media: [
         { type: 'image', url: '/pempek-10.jpg' },
         { type: 'image', url: '/pempek-10-2.jpg' },
-        { type: 'video', embedCode: `<iframe width="560" height="315" src="https://www.youtube.com/embed/2FPx1_CUzYQ" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>` }
+        { type: 'video', embedCode: `<iframe width="560" height="315" src="https://www.youtube.com/embed/C-MCL_YVA-0" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>` }
       ]
     },
     { 
@@ -89,7 +89,7 @@ export default function CustomerLandingPage() {
       media: [
         { type: 'image', url: '/pempek-besar.jpg' },
         { type: 'image', url: '/pempek-besar-2.jpg' },
-        { type: 'video', embedCode: `<iframe width="560" height="315" src="https://www.youtube.com/embed/2FPx1_CUzYQ" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>` }
+        { type: 'video', embedCode: `<iframe width="560" height="315" src="https://www.youtube.com/embed/2eZ2gNoPS4o" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>` }
       ]
     },
     { 
@@ -100,7 +100,7 @@ export default function CustomerLandingPage() {
       media: [
         { type: 'image', url: '/kapal-selam.jpg' },
         { type: 'image', url: '/kapal-selam-2.jpg' },
-        { type: 'video', embedCode: `<iframe width="560" height="315" src="https://www.youtube.com/embed/2FPx1_CUzYQ" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>` }
+        { type: 'video', embedCode: `<iframe width="560" height="315" src="https://www.youtube.com/embed/W7CMh6uJ6-0" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>` }
       ]
     },
     { 
@@ -111,7 +111,7 @@ export default function CustomerLandingPage() {
       media: [
         { type: 'image', url: '/tekwan.jpg' },
         { type: 'image', url: '/tekwan-2.jpg' },
-        { type: 'video', embedCode: `<iframe width="560" height="315" src="https://www.youtube.com/embed/2FPx1_CUzYQ" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>` }
+        { type: 'video', embedCode: `<iframe width="560" height="315" src="https://www.youtube.com/embed/VBTC7sTMqbY" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>` }
       ]
     },
     { 
@@ -122,7 +122,7 @@ export default function CustomerLandingPage() {
       media: [
         { type: 'image', url: '/adaan.jpg' },
         { type: 'image', url: '/adaan-2.jpg' },
-        { type: 'video', embedCode: `<iframe width="560" height="315" src="https://www.youtube.com/embed/2FPx1_CUzYQ" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>` }
+        { type: 'video', embedCode: `<iframe width="560" height="315" src="https://www.youtube.com/embed/MYLM0py1TFs" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>` }
       ]
     }
   ];
@@ -139,7 +139,7 @@ export default function CustomerLandingPage() {
       ],
       media: [
         { type: 'image', url: '/paket-cicip.jpg' },
-        { type: 'video', embedCode: `<iframe width="560" height="315" src="https://www.youtube.com/embed/2FPx1_CUzYQ" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>` }
+        { type: 'video', embedCode: `<iframe width="560" height="315" src="https://www.youtube.com/embed/MXQ8NJricNI" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>` }
       ]
     },
     { 
@@ -153,7 +153,7 @@ export default function CustomerLandingPage() {
       ],
       media: [
         { type: 'image', url: '/paket-keluarga.jpg' },
-        { type: 'video', embedCode: `<iframe width="560" height="315" src="https://www.youtube.com/embed/2FPx1_CUzYQ" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>` }
+        { type: 'video', embedCode: `<iframe width="560" height="315" src="https://www.youtube.com/embed/BujPFKV1of0" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>` }
       ]
     },
     { 
@@ -169,7 +169,7 @@ export default function CustomerLandingPage() {
       ],
       media: [
         { type: 'image', url: '/paket-istimewa.jpg' },
-        { type: 'video', embedCode: `<iframe width="560" height="315" src="https://www.youtube.com/embed/2FPx1_CUzYQ" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>` }
+        { type: 'video', embedCode: `<iframe width="560" height="315" src="https://www.youtube.com/embed/3OUJtJNE7p8" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>` }
       ]
     }
   ];
