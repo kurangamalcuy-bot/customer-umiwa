@@ -770,16 +770,22 @@ export default function CustomerLandingPage() {
       {/* MODAL GALERI PRODUK POP-UP (GAMBAR & VIDEO) */}
       {/* ================================================== */}
       {galleryOpen && selectedProduct && (
-        <div className="fixed inset-0 z-[100] bg-slate-950/90 backdrop-blur-md flex items-center justify-center p-4 md:p-10 animate-in fade-in duration-200">
-          <div className="relative w-full max-w-3xl flex flex-col items-center mt-8 md:mt-0">
+        <div className="fixed inset-0 z-[100] bg-slate-950/95 backdrop-blur-md flex items-center justify-center p-0 md:p-10 animate-in fade-in duration-200">
+          <div className="relative w-full max-w-3xl flex flex-col items-center">
             
-            <button onClick={() => setGalleryOpen(false)} className="absolute -top-12 right-0 bg-white/10 hover:bg-white/20 text-white p-2 rounded-full transition-colors backdrop-blur-md">
+            {/* Tombol Close Responsif: Di pojok kanan atas layar pada HP, di luar kotak pada PC */}
+            <button onClick={() => setGalleryOpen(false)} className="absolute top-4 right-4 md:-top-12 md:right-0 bg-white/10 hover:bg-white/20 text-white p-2 rounded-full transition-colors backdrop-blur-md z-30">
               <X className="w-5 h-5 md:w-6 md:h-6" />
             </button>
 
-            <h2 className="text-white text-lg md:text-2xl font-black mb-3 md:mb-4 tracking-wide text-center">{selectedProduct.name}</h2>
+            <h2 className="text-white text-lg md:text-2xl font-black mb-3 md:mb-4 tracking-wide text-center px-4">{selectedProduct.name}</h2>
 
-            <div className="w-full bg-black rounded-2xl md:rounded-3xl overflow-hidden shadow-2xl relative flex items-center justify-center aspect-video md:aspect-[16/9] border border-slate-800">
+            {/* KONTEN MEDIA UTAMA: Full Edge-to-edge di HP, Aspek Rasio Otomatis Berubah jika Gambar/Video */}
+            <div className={`w-full bg-black md:rounded-3xl overflow-hidden shadow-2xl relative flex items-center justify-center border-y md:border border-slate-800/50 ${
+              selectedProduct.media?.[activeMediaIndex]?.type === 'video'
+                ? 'aspect-[9/16] max-h-[72vh] md:max-h-none md:aspect-video'
+                : 'aspect-square md:aspect-[16/9]'
+            }`}>
               
               {selectedProduct.media && selectedProduct.media.length > 1 && (
                 <button onClick={(e) => { e.stopPropagation(); prevMedia(); }} className="absolute left-2 md:left-4 z-10 bg-white/20 hover:bg-white/40 text-white p-2 rounded-full backdrop-blur-md transition-all">
@@ -807,17 +813,18 @@ export default function CustomerLandingPage() {
               )}
             </div>
 
+            {/* THUMBNAIL PILIHAN DI BAWAHNYA */}
             {selectedProduct.media && selectedProduct.media.length > 1 && (
-              <div className="flex gap-2 md:gap-3 mt-4 md:mt-6 overflow-x-auto w-full justify-center px-2 py-1 scrollbar-hide">
+              <div className="flex gap-3 mt-4 md:mt-6 overflow-x-auto w-full justify-center px-4 py-1 scrollbar-hide">
                 {selectedProduct.media.map((med: any, idx: number) => (
                   <button 
                     key={idx} 
                     onClick={() => setActiveMediaIndex(idx)}
-                    className={`relative w-12 h-12 md:w-20 md:h-20 shrink-0 rounded-lg md:rounded-xl overflow-hidden border-2 transition-all ${activeMediaIndex === idx ? 'border-emerald-500 scale-110 opacity-100 shadow-[0_0_10px_rgba(5,150,105,0.5)]' : 'border-transparent opacity-50 hover:opacity-80'}`}
+                    className={`relative w-14 h-14 md:w-20 md:h-20 shrink-0 rounded-xl overflow-hidden border-2 transition-all ${activeMediaIndex === idx ? 'border-emerald-500 scale-110 opacity-100 shadow-[0_0_15px_rgba(5,150,105,0.5)]' : 'border-transparent opacity-50 hover:opacity-80'}`}
                   >
                     {med.type === 'video' ? (
                       <div className="w-full h-full bg-slate-800 flex items-center justify-center">
-                        <PlayCircle className="w-5 h-5 md:w-8 md:h-8 text-emerald-400" />
+                        <PlayCircle className="w-6 h-6 md:w-8 md:h-8 text-emerald-400" />
                       </div>
                     ) : (
                       <img src={med.url} className="w-full h-full object-cover" alt={`Thumb ${idx}`} />
@@ -827,7 +834,7 @@ export default function CustomerLandingPage() {
               </div>
             )}
             
-            <p className="text-slate-400 text-xs md:text-sm mt-4 md:mt-6 text-center italic max-w-lg px-4">"{selectedProduct.desc}"</p>
+            {/* Teks Deskripsi Bawah Sudah Dihapus Sesuai Request */}
           </div>
         </div>
       )}
