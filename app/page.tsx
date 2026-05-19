@@ -1097,22 +1097,73 @@ export default function CustomerLandingPage() {
 
                   {/* METODE PEMBAYARAN */}
                   <div className="pt-2">
-                    <label className="text-[10px] md:text-xs font-black text-slate-500 uppercase block mb-1.5 md:mb-2">Metode Pembayaran</label>
+                    <label className="text-[10px] md:text-xs font-black text-slate-500 uppercase block mb-1.5 md:mb-2">
+                      Metode Pembayaran
+                    </label>
+
                     <div className="flex gap-2 md:gap-3">
-                      
+
+                      {/* QRIS */}
                       <label className={`flex-1 p-2 md:p-3 border rounded-lg md:rounded-xl text-[10px] md:text-xs font-bold text-center cursor-pointer transition-colors flex flex-col items-center justify-center ${paymentMethod === 'qris' ? 'bg-emerald-50 border-emerald-500 text-emerald-700 shadow-sm' : 'bg-white text-slate-500 hover:bg-slate-50'}`}>
-                        <input type="radio" className="hidden" checked={paymentMethod === 'qris'} onChange={() => setPaymentMethod('qris')} />
-                        <span className="text-sm md:text-lg mb-1">📱</span> QRIS
+                        
+                        <input
+                          type="radio"
+                          className="hidden"
+                          checked={paymentMethod === 'qris'}
+                          onChange={() => setPaymentMethod('qris')}
+                        />
+
+                        <div className="h-7 md:h-8 flex items-center justify-center mb-1">
+                          <img
+                            src="/logo-qris.png"
+                            alt="QRIS"
+                            className="max-h-full max-w-[52px] object-contain"
+                          />
+                        </div>
+
+                        QRIS
                       </label>
-                      
+
+                      {/* BSI */}
                       <label className={`flex-1 p-2 md:p-3 border rounded-lg md:rounded-xl text-[10px] md:text-xs font-bold text-center cursor-pointer transition-colors flex flex-col items-center justify-center ${paymentMethod === 'bsi' ? 'bg-emerald-50 border-emerald-500 text-emerald-700 shadow-sm' : 'bg-white text-slate-500 hover:bg-slate-50'}`}>
-                        <input type="radio" className="hidden" checked={paymentMethod === 'bsi'} onChange={() => setPaymentMethod('bsi')} />
-                        <span className="text-sm md:text-lg mb-1">🏦</span> Transfer BSI
+                        
+                        <input
+                          type="radio"
+                          className="hidden"
+                          checked={paymentMethod === 'bsi'}
+                          onChange={() => setPaymentMethod('bsi')}
+                        />
+
+                        <div className="h-7 md:h-8 flex items-center justify-center mb-1">
+                          <img
+                            src="/logo-bsi.png"
+                            alt="BSI"
+                            className="max-h-full max-w-[52px] object-contain"
+                          />
+                        </div>
+
+                        Transfer BSI
                       </label>
-                      
+
+                      {/* CASH */}
                       <label className={`flex-1 p-2 md:p-3 border rounded-lg md:rounded-xl text-[10px] md:text-xs font-bold text-center cursor-pointer transition-colors flex flex-col items-center justify-center ${paymentMethod === 'cash' ? 'bg-emerald-50 border-emerald-500 text-emerald-700 shadow-sm' : 'bg-white text-slate-500 hover:bg-slate-50'}`}>
-                        <input type="radio" className="hidden" checked={paymentMethod === 'cash'} onChange={() => setPaymentMethod('cash')} />
-                        <span className="text-sm md:text-lg mb-1">💵</span> Cash / Tunai
+                        
+                        <input
+                          type="radio"
+                          className="hidden"
+                          checked={paymentMethod === 'cash'}
+                          onChange={() => setPaymentMethod('cash')}
+                        />
+
+                        <div className="h-7 md:h-8 flex items-center justify-center mb-1">
+                          <img
+                            src="/logo-duit.png"
+                            alt="Duit"
+                            className="max-h-full max-w-[52px] object-contain"
+                          />
+                        </div>
+
+                        Cash / Tunai
                       </label>
 
                     </div>
