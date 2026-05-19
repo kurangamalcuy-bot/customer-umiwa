@@ -10,6 +10,7 @@ import {
 
 export default function CustomerLandingPage() {
   const [products, setProducts] = useState<any[]>([]);
+  const [bundlesData, setBundlesData] = useState<any[]>([]); // Menyimpan stok dinamis bundling
   const [cart, setCart] = useState<any[]>([]);
   const [isCartOpen, setIsCartOpen] = useState(false);
   
@@ -46,82 +47,93 @@ export default function CustomerLandingPage() {
     }
   };
 
+  // === KODE BARU: AUTO SCROLL TESTIMONI (PING-PONG) ===
+  const scrollDirection = React.useRef(1); // 1 = kanan, -1 = kiri
+
+  useEffect(() => {
+    const container = testiScrollRef.current;
+    if (!container) return;
+
+    const autoScroll = setInterval(() => {
+      // Cek apakah sudah mentok kanan (toleransi 10px)
+      if (container.scrollLeft + container.clientWidth >= container.scrollWidth - 10) {
+        scrollDirection.current = -1; // Balik arah ke kiri
+      } 
+      // Cek apakah sudah mentok kiri (toleransi 10px)
+      else if (container.scrollLeft <= 10) {
+        scrollDirection.current = 1; // Balik arah ke kanan
+      }
+
+      // Tentukan seberapa jauh gesernya (sesuaikan dengan tombol manual)
+      const scrollAmount = window.innerWidth > 768 ? 400 : 300;
+      
+      // Eksekusi geser mulus
+      container.scrollBy({ 
+        left: scrollDirection.current * scrollAmount, 
+        behavior: 'smooth' 
+      });
+    }, 2000); // Angka 3000 artinya geser otomatis setiap 3 detik. Bos bisa ubah!
+
+    // Bersihkan interval kalau pindah halaman supaya memori tidak bocor
+    return () => clearInterval(autoScroll);
+  }, []);
+  // ====================================================
+
   // 1. KAMUS KATALOG PRODUK SATUAN
   const CATALOG = [
     { 
-      name: "Pempek Isi 20", 
-      price: 35000, 
-      img: "/pempek-20.jpg", 
+      name: "Pempek Isi 20", price: 35000, normalPrice: 45000, img: "/pempek-20.jpg", 
       desc: "Cocok banget buat stok cemilan sekeluarga atau kumpul bareng teman. Makan rame-rame makin seru!",
       media: [
-        { type: 'image', url: '/pempek-20.jpg' },
-        { type: 'image', url: '/pempek-20-2.jpg' },
-        { type: 'video', embedCode: `<iframe width="560" height="315" src="https://www.youtube.com/embed/dtzh8Cd15Ao" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>` }
+        { type: 'image', url: '/pempek-20.jpg' }, { type: 'image', url: '/pempek-20-2.jpg' },
+        { type: 'video', embedCode: `<iframe width="560" height="315" src="https://www.youtube.com/embed/dtzh8Cd15Ao" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>` } 
       ]
     },
     { 
-      name: "Pempek Isi 15", 
-      price: 30000, 
-      img: "/pempek-15.jpg", 
+      name: "Pempek Isi 15", price: 30000, normalPrice: 35000, img: "/pempek-15.jpg", 
       desc: "Porsi nanggung yang pas banget buat nemenin kerja santai atau nonton drakor.",
       media: [
-        { type: 'image', url: '/pempek-15.jpg' },
-        { type: 'image', url: '/pempek-15-2.jpg' },
+        { type: 'image', url: '/pempek-15.jpg' }, { type: 'image', url: '/pempek-15-2.jpg' },
         { type: 'video', embedCode: `<iframe width="560" height="315" src="https://www.youtube.com/embed/K8wCt9dprfY" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>` }
       ]
     },
     { 
-      name: "Pempek Isi 10", 
-      price: 20000, 
-      img: "/pempek-10.jpg", 
+      name: "Pempek Isi 10", price: 20000, normalPrice: 25000, img: "/pempek-10.jpg", 
       desc: "Pilihan pas buat me-time atau ganjal perut saat malam hari.",
       media: [
-        { type: 'image', url: '/pempek-10.jpg' },
-        { type: 'image', url: '/pempek-10-2.jpg' },
+        { type: 'image', url: '/pempek-10.jpg' }, { type: 'image', url: '/pempek-10-2.jpg' },
         { type: 'video', embedCode: `<iframe width="560" height="315" src="https://www.youtube.com/embed/C-MCL_YVA-0" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>` }
       ]
     },
     { 
-      name: "Pempek Besar isi 10", 
-      price: 35000, 
-      img: "/pempek-besar.jpg", 
+      name: "Pempek Besar isi 10", price: 35000, normalPrice: 45000, img: "/pempek-besar.jpg", 
       desc: "Buat kamu yang suka ukuran jumbo dan puas di setiap gigitan. Super kenyang!",
       media: [
-        { type: 'image', url: '/pempek-besar.jpg' },
-        { type: 'image', url: '/pempek-besar-2.jpg' },
+        { type: 'image', url: '/pempek-besar.jpg' }, { type: 'image', url: '/pempek-besar-2.jpg' },
         { type: 'video', embedCode: `<iframe width="560" height="315" src="https://www.youtube.com/embed/2eZ2gNoPS4o" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>` }
       ]
     },
     { 
-      name: "Pempek Kapal Selam isi Telur", 
-      price: 28000, 
-      img: "/kapal-selam.jpg", 
+      name: "Pempek Kapal Selam isi Telur", price: 28000, normalPrice: 35000, img: "/kapal-selam.jpg", 
       desc: "Spesial buat pecinta telur. Sajian utama yang bikin perut langsung full dan happy!",
       media: [
-        { type: 'image', url: '/kapal-selam.jpg' },
-        { type: 'image', url: '/kapal-selam-2.jpg' },
+        { type: 'image', url: '/kapal-selam.jpg' }, { type: 'image', url: '/kapal-selam-2.jpg' },
         { type: 'video', embedCode: `<iframe width="560" height="315" src="https://www.youtube.com/embed/W7CMh6uJ6-0" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>` }
       ]
     },
     { 
-      name: "Tekwan", 
-      price: 35000, 
-      img: "/tekwan.jpg", 
+      name: "Tekwan", price: 35000, normalPrice: 40000, img: "/tekwan.jpg", 
       desc: "Penyelamat di saat hujan atau butuh yang hangat-hangat. Kuah kaldunya bikin rileks.",
       media: [
-        { type: 'image', url: '/tekwan.jpg' },
-        { type: 'image', url: '/tekwan-2.jpg' },
+        { type: 'image', url: '/tekwan.jpg' }, { type: 'image', url: '/tekwan-2.jpg' },
         { type: 'video', embedCode: `<iframe width="560" height="315" src="https://www.youtube.com/embed/VBTC7sTMqbY" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>` }
       ]
     },
     { 
-      name: "Adaan+Kulit isi 12", 
-      price: 20000, 
-      img: "/adaan.jpg", 
+      name: "Adaan+Kulit isi 12", price: 20000, normalPrice: 25000, img: "/adaan.jpg", 
       desc: "Cemilan gurih favorit anak-anak sampai dewasa. Bikin mulut nggak mau berhenti ngunyah!",
       media: [
-        { type: 'image', url: '/adaan.jpg' },
-        { type: 'image', url: '/adaan-2.jpg' },
+        { type: 'image', url: '/adaan.jpg' }, { type: 'image', url: '/adaan-2.jpg' },
         { type: 'video', embedCode: `<iframe width="560" height="315" src="https://www.youtube.com/embed/MYLM0py1TFs" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>` }
       ]
     }
@@ -209,20 +221,45 @@ export default function CustomerLandingPage() {
         }
       });
 
+      // 1. SET STOK UNTUK SATUAN
       const activeProducts = CATALOG.map(cat => {
         const stock = stockMap.get(cat.name.toLowerCase()) || 0;
         return { ...cat, stock };
       });
       setProducts(activeProducts);
+
+      // 2. HITUNG OTOMATIS STOK BUNDLING (Berdasarkan komponen tersedikit)
+      const BUNDLE_COMPONENTS: any = {
+        "Paket Cicip (2 packs)": ["Pempek Isi 10", "Pempek Kapal Selam isi Telur"],
+        "Paket Keluarga (3 packs)": ["Pempek Isi 20", "Adaan+Kulit isi 12", "Tekwan"],
+        "Paket Istimewa (5 packs)": ["Pempek Isi 20", "Pempek Besar isi 10", "Tekwan", "Adaan+Kulit isi 12", "Pempek Kapal Selam isi Telur"]
+      };
+
+      const activeBundles = BUNDLES.map(b => {
+        const components = BUNDLE_COMPONENTS[b.name] || [];
+        let minStock = Infinity;
+        
+        components.forEach((compName: string) => {
+          const compStock = stockMap.get(compName.toLowerCase()) || 0;
+          if (compStock < minStock) minStock = compStock; // Ambil nilai stok terkecil
+        });
+        
+        return { ...b, stock: minStock === Infinity ? 0 : minStock };
+      });
+      setBundlesData(activeBundles);
     }
   };
 
-  // FUNGSI KERANJANG BELANJA
+  // FUNGSI KERANJANG BELANJA (DENGAN PENGUNCI STOK MAKSIMAL)
   const addToCart = (item: any, type: 'satuan' | 'bundling') => {
-    if (type === 'satuan' && item.stock <= 0) return alert('Maaf, stok habis!');
+    if (item.stock <= 0) return alert('Maaf, stok habis!');
     
     const existing = cart.find(c => c.name === item.name);
     if (existing) {
+      if (existing.qty >= item.stock) {
+        alert(`Maaf, semua sisa stok yang tersedia (${item.stock} paket) sudah masuk ke keranjang Anda!`);
+        return;
+      }
       setCart(cart.map(c => c.name === item.name ? { ...c, qty: c.qty + 1 } : c));
     } else {
       setCart([...cart, { ...item, qty: 1 }]);
@@ -231,10 +268,19 @@ export default function CustomerLandingPage() {
   };
 
   const updateQty = (name: string, delta: number) => {
+    // Cari data batas maksimal stoknya (cek di satuan dulu, kalau tidak ada cek di bundling)
+    const itemData = products.find(p => p.name === name) || bundlesData.find(b => b.name === name);
+
     setCart(cart.map(c => {
       if (c.name === name) {
-        const newQty = Math.max(0, c.qty + delta);
-        return { ...c, qty: newQty };
+        const newQty = c.qty + delta;
+        
+        if (delta > 0 && itemData && newQty > itemData.stock) {
+          alert(`Maaf, stok untuk ${name} hanya tersedia ${itemData.stock} paket!`);
+          return c; 
+        }
+        
+        return { ...c, qty: Math.max(0, newQty) };
       }
       return c;
     }).filter(c => c.qty > 0));
@@ -412,7 +458,8 @@ export default function CustomerLandingPage() {
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-5 md:gap-8">
-            {BUNDLES.map((b, i) => (
+            {/* PASTIKAN SEKARANG MAPPING-NYA PAKAI bundlesData, BUKAN BUNDLES LAGI */}
+            {bundlesData.map((b, i) => (
               <div key={i} className="bg-white rounded-[24px] md:rounded-[32px] shadow-[0_8px_30px_rgb(0,0,0,0.04)] border-2 border-rose-100 overflow-hidden group hover:shadow-[0_8px_30px_rgb(225,29,72,0.15)] hover:border-rose-300 transition-all duration-300 flex flex-col relative">
                 
                 <div className="absolute top-0 right-0 z-10 bg-gradient-to-bl from-rose-600 to-red-500 text-white font-black px-4 py-2 md:px-5 md:py-2.5 rounded-bl-[24px] md:rounded-bl-[32px] shadow-lg flex flex-col items-center">
@@ -422,7 +469,11 @@ export default function CustomerLandingPage() {
 
                 <div className="h-44 md:h-56 bg-slate-100 relative overflow-hidden cursor-pointer" onClick={() => openGallery(b)}>
                   <img src={b.img} alt={b.name} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" onError={(e:any) => e.target.src = 'https://via.placeholder.com/400x300?text=Foto+Menyusul'} />
-                  <div className="absolute inset-0 bg-slate-900/0 group-hover:bg-slate-900/30 transition-all duration-300 flex items-center justify-center">
+                  
+                  {/* TULISAN HABIS KALAU STOK BUNDLING 0 */}
+                  {b.stock <= 0 && <div className="absolute inset-0 bg-slate-900/70 backdrop-blur-sm flex items-center justify-center z-20"><span className="bg-rose-500 text-white font-black px-4 py-2 rounded-full text-xs shadow-xl transform -rotate-12 border-2 border-white">HABIS!</span></div>}
+
+                  <div className="absolute inset-0 bg-slate-900/0 group-hover:bg-slate-900/30 transition-all duration-300 flex items-center justify-center z-10">
                     <span className="bg-white/90 backdrop-blur-sm text-slate-800 text-[10px] md:text-xs font-bold px-3 py-1.5 md:px-4 md:py-2 rounded-full opacity-0 group-hover:opacity-100 transform translate-y-4 group-hover:translate-y-0 transition-all shadow-lg flex items-center">
                       <PlayCircle className="w-3 h-3 md:w-4 md:h-4 mr-1 md:mr-2 text-rose-600"/> Lihat Detail
                     </span>
@@ -450,9 +501,23 @@ export default function CustomerLandingPage() {
                     </div>
                   </div>
 
-                  <button onClick={() => addToCart(b, 'bundling')} className="w-full bg-slate-900 text-white font-black py-3.5 md:py-4 rounded-xl md:rounded-2xl hover:bg-rose-600 transition-all shadow-lg shadow-slate-900/20 active:scale-95 text-xs md:text-sm flex justify-center items-center">
-                    <ShoppingCart className="w-3.5 h-3.5 md:w-4 md:h-4 mr-1.5 md:mr-2"/> TAMBAH KE KERANJANG
+                  <button 
+                    onClick={() => addToCart(b, 'bundling')} 
+                    disabled={b.stock <= 0}
+                    className={`w-full font-black py-3.5 md:py-4 rounded-xl md:rounded-2xl transition-all shadow-lg active:scale-95 text-xs md:text-sm flex justify-center items-center ${
+                      b.stock > 0 
+                      ? 'bg-slate-900 text-white hover:bg-rose-600 shadow-slate-900/20' 
+                      : 'bg-slate-200 text-slate-400 cursor-not-allowed shadow-none'
+                    }`}
+                  >
+                    {b.stock > 0 ? (
+                      <><ShoppingCart className="w-3.5 h-3.5 md:w-4 md:h-4 mr-1.5 md:mr-2"/> TAMBAH KE KERANJANG</>
+                    ) : (
+                      'KOSONG'
+                    )}
                   </button>
+                  {/* MENAMPILKAN TULISAN SISA STOKNYA! */}
+                  {b.stock > 0 && <p className="text-[10px] text-center font-bold text-slate-400 mt-2">Tersedia: {b.stock} Paket</p>}
                 </div>
               </div>
             ))}
@@ -472,9 +537,25 @@ export default function CustomerLandingPage() {
             {products.map((p, i) => (
               <div key={i} className="bg-white rounded-[20px] md:rounded-[32px] shadow-sm border border-slate-100 overflow-hidden flex flex-col hover:shadow-xl hover:border-emerald-100 transition-all group">
                 <div className="h-32 md:h-48 bg-slate-100 relative cursor-pointer overflow-hidden" onClick={() => openGallery(p)}>
+                   
+                   {/* STIKER MARKETING: TURUN HARGA & DISKON (Hanya Muncul Jika Ada Harga Coret) */}
+                   {p.normalPrice && (
+                     <>
+                       {/* Stiker Kiri Atas */}
+                       <div className="absolute top-0 left-0 z-20 bg-rose-600 text-white text-[8px] md:text-[10px] font-black px-2 py-1 md:px-3 md:py-1.5 rounded-br-[16px] shadow-md flex items-center">
+                          <Flame className="w-2.5 h-2.5 md:w-3 md:h-3 mr-1 animate-pulse"/> TURUN HARGA
+                       </div>
+                       {/* Stiker Kanan Atas (Otomatis Hitung Persen) */}
+                       <div className="absolute top-2 right-2 z-20 bg-amber-400 text-slate-900 text-[9px] md:text-xs font-black px-2 py-0.5 md:px-3 md:py-1 rounded-full shadow-lg transform rotate-6 border-2 border-white">
+                          DISKON {Math.round(((p.normalPrice - p.price) / p.normalPrice) * 100)}%
+                       </div>
+                     </>
+                   )}
+
                    <img src={p.img} alt={p.name} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" onError={(e:any) => e.target.src = 'https://via.placeholder.com/400x300?text=Foto+Produk'} />
-                   {p.stock <= 0 && <div className="absolute inset-0 bg-slate-900/70 backdrop-blur-sm flex items-center justify-center z-10"><span className="bg-rose-500 text-white font-black px-3 py-1 md:px-4 md:py-1.5 rounded-full text-[10px] md:text-xs shadow-xl transform -rotate-12 border-2 border-white">HABIS!</span></div>}
-                   <div className="absolute inset-0 bg-slate-900/0 group-hover:bg-slate-900/20 transition-all duration-300 flex items-center justify-center">
+                   
+                   {p.stock <= 0 && <div className="absolute inset-0 bg-slate-900/70 backdrop-blur-sm flex items-center justify-center z-30"><span className="bg-rose-500 text-white font-black px-3 py-1 md:px-4 md:py-1.5 rounded-full text-[10px] md:text-xs shadow-xl transform -rotate-12 border-2 border-white">HABIS!</span></div>}
+                   <div className="absolute inset-0 bg-slate-900/0 group-hover:bg-slate-900/20 transition-all duration-300 flex items-center justify-center z-10">
                       <div className="bg-white/90 p-1.5 md:p-2 rounded-full opacity-0 group-hover:opacity-100 transform scale-50 group-hover:scale-100 transition-all shadow-md">
                         <PlayCircle className="w-4 h-4 md:w-5 md:h-5 text-emerald-600"/>
                       </div>
@@ -484,7 +565,11 @@ export default function CustomerLandingPage() {
                   <h3 className="font-black text-slate-800 text-xs md:text-base leading-tight mb-1 md:mb-2">{p.name}</h3>
                   <p className="text-[10px] md:text-xs text-slate-500 font-medium mb-2 md:mb-4 flex-1 line-clamp-3 md:line-clamp-none">{p.desc}</p>
                   
-                  <div className="flex justify-between items-end mb-3 md:mb-4 border-t border-slate-50 pt-2 md:pt-3">
+                  {/* HARGA CORET & HARGA BARU */}
+                  <div className="flex flex-col justify-end mb-3 md:mb-4 border-t border-slate-50 pt-2 md:pt-3">
+                    {p.normalPrice && (
+                      <p className="text-[10px] md:text-xs font-bold text-slate-400 line-through mb-0.5">{formatIDR(p.normalPrice)}</p>
+                    )}
                     <p className="text-base md:text-xl font-black text-emerald-600 leading-none">{formatIDR(p.price)}</p>
                   </div>
                   
@@ -882,10 +967,10 @@ export default function CustomerLandingPage() {
                   <h3 className="font-black text-[10px] md:text-xs text-slate-400 uppercase tracking-widest border-b border-slate-100 pb-2 md:pb-3">Data Pemesan & Pengiriman</h3>
                   
                   <div>
-                    <input type="text" required value={custName} onChange={(e) => setCustName(e.target.value)} placeholder="Nama Lengkap" className="w-full p-2.5 md:p-3.5 bg-slate-50 border border-slate-200 rounded-lg md:rounded-xl text-[16px] md:text-sm font-bold outline-none focus:border-emerald-500" />
+                    <input type="text" required value={custName} onChange={(e) => setCustName(e.target.value)} placeholder="Nama Lengkap (Cth: Rina Mawar)" className="w-full p-2.5 md:p-3.5 bg-slate-50 border border-slate-200 rounded-lg md:rounded-xl text-xs md:text-sm font-semibold text-slate-800 placeholder:text-[12px] md:placeholder:text-xs placeholder:text-slate-400/60 placeholder:font-bold outline-none focus:border-emerald-500 focus:bg-white transition-colors" />
                   </div>
                   <div>
-                    <input type="tel" required value={custPhone} onChange={(e) => setCustPhone(e.target.value.replace(/\D/g, '').replace(/(\d{4})(?=\d)/g, '$1-'))} placeholder="No. WhatsApp (Cth: 0821-8977-7656)" className="w-full p-2.5 md:p-3.5 bg-slate-50 border border-slate-200 rounded-lg md:rounded-xl text-[16px] md:text-sm font-bold outline-none focus:border-emerald-500" />
+                    <input type="tel" required value={custPhone} onChange={(e) => setCustPhone(e.target.value.replace(/\D/g, '').replace(/(\d{4})(?=\d)/g, '$1-'))} placeholder="No. WhatsApp (Cth: 0812-3456-7890)" className="w-full p-2.5 md:p-3.5 bg-slate-50 border border-slate-200 rounded-lg md:rounded-xl text-xs md:text-sm font-semibold text-slate-800 placeholder:text-[12px] md:placeholder:text-xs placeholder:text-slate-400/60 placeholder:font-bold outline-none focus:border-emerald-500 focus:bg-white transition-colors" />
                   </div>
 
                   {/* TOGGLE PENGIRIMAN */}
@@ -927,7 +1012,7 @@ export default function CustomerLandingPage() {
                             </span>
                             <span className="font-bold text-[11px] md:text-sm text-slate-800">Kurir Umiwa - Instant (Rp 9rb)</span>
                           </div>
-                          <p className="text-[10px] text-slate-500 pl-6 leading-relaxed">Khusus pengiriman di Cimahi saja. Pesanan diantar langsung saat ini juga oleh kurir dari Pempek Umiwa.</p>
+                          <p className="text-[10px] text-slate-500 pl-6 leading-relaxed">Khusus pengiriman di Cimahi aja. Pesanan diantar langsung ke tempat tujuan oleh kurir dari Pempek Umiwa.</p>
                         </label>
 
                         <label className={`block p-2.5 md:p-3 border rounded-lg md:rounded-xl cursor-pointer ${courier === 'gosend' ? 'bg-emerald-50 border-emerald-500' : 'bg-white border-slate-200'}`}>
@@ -946,15 +1031,15 @@ export default function CustomerLandingPage() {
                           <div className="bg-slate-50 p-3 md:p-4 rounded-lg md:rounded-xl border border-slate-200 space-y-2.5 md:space-y-3 mt-2 md:mt-4">
                               <p className="text-[9px] md:text-[10px] font-black text-slate-500 uppercase tracking-widest border-b border-slate-200 pb-1.5 md:pb-2">Alamat Pengiriman</p>
                               <div>
-                                <input type="text" required placeholder="Jalan, No Rumah, RT/RW" value={address.jalan} onChange={e=>setAddress({...address, jalan: e.target.value})} className="w-full p-2.5 md:p-3 bg-white border border-slate-200 rounded-lg text-[16px] md:text-sm font-bold outline-none focus:border-emerald-500" />
+                                <input type="text" required placeholder="Jalan, No Rumah, RT/RW" value={address.jalan} onChange={e=>setAddress({...address, jalan: e.target.value})} className="w-full p-2.5 md:p-3 bg-white border border-slate-200 rounded-lg text-xs md:text-sm font-semibold text-slate-800 placeholder:text-[12px] md:placeholder:text-xs placeholder:text-slate-400/60 placeholder:font-bold outline-none focus:border-emerald-500" />
                               </div>
                               <div className="grid grid-cols-2 gap-2 md:gap-3">
-                                <input type="text" required placeholder="Kelurahan" value={address.kelurahan} onChange={e=>setAddress({...address, kelurahan: e.target.value})} className="w-full p-2.5 md:p-3 bg-white border border-slate-200 rounded-lg text-[16px] md:text-sm font-bold outline-none focus:border-emerald-500" />
-                                <input type="text" required placeholder="Kecamatan" value={address.kecamatan} onChange={e=>setAddress({...address, kecamatan: e.target.value})} className="w-full p-2.5 md:p-3 bg-white border border-slate-200 rounded-lg text-[16px] md:text-sm font-bold outline-none focus:border-emerald-500" />
+                                <input type="text" required placeholder="Kelurahan" value={address.kelurahan} onChange={e=>setAddress({...address, kelurahan: e.target.value})} className="w-full p-2.5 md:p-3 bg-white border border-slate-200 rounded-lg text-xs md:text-sm font-semibold text-slate-800 placeholder:text-[12px] md:placeholder:text-xs placeholder:text-slate-400/60 placeholder:font-bold outline-none focus:border-emerald-500" />
+                                <input type="text" required placeholder="Kecamatan" value={address.kecamatan} onChange={e=>setAddress({...address, kecamatan: e.target.value})} className="w-full p-2.5 md:p-3 bg-white border border-slate-200 rounded-lg text-xs md:text-sm font-semibold text-slate-800 placeholder:text-[12px] md:placeholder:text-xs placeholder:text-slate-400/60 placeholder:font-bold outline-none focus:border-emerald-500" />
                               </div>
                               <div className="grid grid-cols-2 gap-2 md:gap-3">
-                                <input type="text" required placeholder="Kab/Kota" value={address.kota} onChange={e=>setAddress({...address, kota: e.target.value})} className="w-full p-2.5 md:p-3 bg-white border border-slate-200 rounded-lg text-[16px] md:text-sm font-bold outline-none focus:border-emerald-500" />
-                                <input type="text" required placeholder="Provinsi" value={address.provinsi} onChange={e=>setAddress({...address, provinsi: e.target.value})} className="w-full p-2.5 md:p-3 bg-white border border-slate-200 rounded-lg text-[16px] md:text-sm font-bold outline-none focus:border-emerald-500" />
+                                <input type="text" required placeholder="Kab/Kota" value={address.kota} onChange={e=>setAddress({...address, kota: e.target.value})} className="w-full p-2.5 md:p-3 bg-white border border-slate-200 rounded-lg text-xs md:text-sm font-semibold text-slate-800 placeholder:text-[12px] md:placeholder:text-xs placeholder:text-slate-400/60 placeholder:font-bold outline-none focus:border-emerald-500" />
+                                <input type="text" required placeholder="Provinsi" value={address.provinsi} onChange={e=>setAddress({...address, provinsi: e.target.value})} className="w-full p-2.5 md:p-3 bg-white border border-slate-200 rounded-lg text-xs md:text-sm font-semibold text-slate-800 placeholder:text-[12px] md:placeholder:text-xs placeholder:text-slate-400/60 placeholder:font-bold outline-none focus:border-emerald-500" />
                               </div>
                           </div>
                         )}
@@ -963,7 +1048,14 @@ export default function CustomerLandingPage() {
 
                   {/* TAMBAHAN PACKING */}
                   <div className="pt-2">
-                    <label className="text-[9px] md:text-[10px] font-black text-slate-500 uppercase block mb-1.5 md:mb-2">Tambahan Packing Aman?</label>
+                    {/* Judul diubah agar langsung merujuk ke Thermal Packing */}
+                    <label className="text-[10px] md:text-xs font-black text-slate-500 uppercase block mb-1">Gunakan Thermal Packing?</label>
+                    
+                    {/* NOTE TAMBAHAN NOTE BARU UNTUK KONSUMEN */}
+                    <p className="text-[10px] md:text-xs text-slate-400 mb-2.5 leading-relaxed">
+                      Berfungsi menjaga pempek frozen tetap dingin, beku, dan fresh selama pengiriman.
+                    </p>
+                    
                     <div className="flex gap-2 md:gap-3">
                       <label className={`flex-1 p-2 md:p-3 border rounded-lg md:rounded-xl text-[10px] md:text-xs font-bold text-center cursor-pointer transition-colors ${addPacking === true ? 'bg-emerald-50 border-emerald-500 text-emerald-700' : 'bg-white text-slate-500 hover:bg-slate-50'}`}>
                         <input type="radio" className="hidden" checked={addPacking === true} onChange={() => setAddPacking(true)} />
@@ -984,8 +1076,7 @@ export default function CustomerLandingPage() {
                           <input type="radio" className="hidden" checked={packingOption === 'pouch'} onChange={() => setPackingOption('pouch')} />
                           <img src="/foto-pouch.jpg" alt="Thermal Pouch" className="w-16 h-16 md:w-20 md:h-20 object-cover rounded-lg mb-2 bg-slate-100" onError={(e:any) => e.target.src = 'https://via.placeholder.com/80?text=Foto+Pouch'} />
                           <span className="text-[10px] md:text-xs font-bold text-slate-800 leading-tight">Thermal Pouch</span>
-                          {/* KETERANGAN MAKSIMAL PACK */}
-                          <span className="text-[9px] md:text-[10px] text-slate-400 mt-0.5">Maksimal cukup untuk 2 pack</span>
+                          <span className="text-[9px] md:text-[10px] text-slate-400 mt-0.5">Maksimal muat untuk 2 pack</span>
                           <span className="text-[9px] md:text-[10px] font-black text-emerald-600 mt-1">+ Rp 2.500</span>
                         </label>
                         
@@ -994,8 +1085,7 @@ export default function CustomerLandingPage() {
                           <input type="radio" className="hidden" checked={packingOption === 'cooler'} onChange={() => setPackingOption('cooler')} />
                           <img src="/foto-cooler.jpg" alt="Thermal Cooler Bag" className="w-16 h-16 md:w-20 md:h-20 object-cover rounded-lg mb-2 bg-slate-100" onError={(e:any) => e.target.src = 'https://via.placeholder.com/80?text=Foto+Cooler'} />
                           <span className="text-[10px] md:text-xs font-bold text-slate-800 leading-tight">Thermal Cooler Bag</span>
-                          {/* KETERANGAN MAKSIMAL PACK */}
-                          <span className="text-[9px] md:text-[10px] text-slate-400 mt-0.5">Maksimal cukup untuk 5 pack</span>
+                          <span className="text-[9px] md:text-[10px] text-slate-400 mt-0.5">Maksimal muat untuk 5 pack</span>
                           <span className="text-[9px] md:text-[10px] font-black text-emerald-600 mt-1">+ Rp 3.000</span>
                         </label>
 
