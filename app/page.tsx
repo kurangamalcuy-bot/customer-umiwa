@@ -27,6 +27,7 @@ export default function CustomerLandingPage() {
   const [deliveryMode, setDeliveryMode] = useState('pickup'); 
   const [courier, setCourier] = useState('ahsan'); // 'ahsan', 'umiwa', 'gosend'
   const [addPacking, setAddPacking] = useState(false);
+  const [paymentMethod, setPaymentMethod] = useState('qris'); // Pilihan: 'qris', 'bsi', 'cash'
   const [packingOption, setPackingOption] = useState('pouch'); // 'pouch' atau 'cooler'
   
   // State Alamat Lengkap
@@ -344,7 +345,13 @@ export default function CustomerLandingPage() {
     if (addPacking) message += `Packing: ${formatIDR(packingFee)}\n`;
 
     message += `\n*GRAND TOTAL: ${formatIDR(grandTotal)}*\n\n`;
-    message += `Pembayaran saya scan via QRIS. Terima kasih!`;
+    let paymentText = '';
+    if (paymentMethod === 'qris') paymentText = 'QRIS';
+    else if (paymentMethod === 'bsi') paymentText = 'Transfer BSI';
+    else if (paymentMethod === 'cash') paymentText = 'Cash / Tunai';
+    
+    message += `*Metode Pembayaran:* ${paymentText}\n\n`;
+    message += `Terima kasih!`;
 
     const encodedMessage = encodeURIComponent(message);
     window.open(`https://wa.me/6287788472837?text=${encodedMessage}`, '_blank');
@@ -999,9 +1006,16 @@ export default function CustomerLandingPage() {
                             <span className={`w-3 h-3 md:w-4 md:h-4 rounded-full border-2 mr-2 flex items-center justify-center ${courier === 'ahsan' ? 'border-emerald-500' : 'border-slate-300'}`}>
                               {courier === 'ahsan' && <span className="w-1.5 h-1.5 md:w-2 md:h-2 rounded-full bg-emerald-500"></span>}
                             </span>
-                            <span className="font-bold text-[11px] md:text-sm text-slate-800">Ahsan Xpress - Sameday (Rp 12rb)</span>
+                            <span className="font-bold text-[11px] md:text-sm text-slate-800">
+                              Ahsan Xpress - Sameday (Rp 12rb)
+                            </span>
                           </div>
-                          <p className="text-[10px] text-slate-500 pl-6 leading-relaxed">Batas order jam 10 pagi, pengiriman jam 15.00 sampai selesai. Order di atas jam batas order akan dikirim besoknya.</p>
+
+                          <p className="text-[10px] text-slate-500 pl-6 leading-relaxed">
+                            Ongkir flat Rp12rb untuk area Bandung Raya (Kota Bandung, Cimahi, Kab. Bandung, Kab. Bandung Barat, dan sebagian Sumedang). 
+                            Order masuk maksimal jam 10 pagi, lebih dari itu diproses besok. 
+                            Pengiriman ke alamat tujuan mulai jam 15.00 sampai selesai.
+                          </p>
                         </label>
 
                         <label className={`block p-2.5 md:p-3 border rounded-lg md:rounded-xl cursor-pointer ${courier === 'umiwa' ? 'bg-emerald-50 border-emerald-500' : 'bg-white border-slate-200'}`}>
@@ -1029,22 +1043,80 @@ export default function CustomerLandingPage() {
                         {/* FORM ALAMAT */}
                         {(courier === 'ahsan' || courier === 'umiwa') && (
                           <div className="bg-slate-50 p-3 md:p-4 rounded-lg md:rounded-xl border border-slate-200 space-y-2.5 md:space-y-3 mt-2 md:mt-4">
-                              <p className="text-[9px] md:text-[10px] font-black text-slate-500 uppercase tracking-widest border-b border-slate-200 pb-1.5 md:pb-2">Alamat Pengiriman</p>
-                              <div>
-                                <input type="text" required placeholder="Jalan, No Rumah, RT/RW" value={address.jalan} onChange={e=>setAddress({...address, jalan: e.target.value})} className="w-full p-2.5 md:p-3 bg-white border border-slate-200 rounded-lg text-xs md:text-sm font-semibold text-slate-800 placeholder:text-[12px] md:placeholder:text-xs placeholder:text-slate-400/60 placeholder:font-bold outline-none focus:border-emerald-500" />
-                              </div>
-                              <div className="grid grid-cols-2 gap-2 md:gap-3">
-                                <input type="text" required placeholder="Kelurahan" value={address.kelurahan} onChange={e=>setAddress({...address, kelurahan: e.target.value})} className="w-full p-2.5 md:p-3 bg-white border border-slate-200 rounded-lg text-xs md:text-sm font-semibold text-slate-800 placeholder:text-[12px] md:placeholder:text-xs placeholder:text-slate-400/60 placeholder:font-bold outline-none focus:border-emerald-500" />
-                                <input type="text" required placeholder="Kecamatan" value={address.kecamatan} onChange={e=>setAddress({...address, kecamatan: e.target.value})} className="w-full p-2.5 md:p-3 bg-white border border-slate-200 rounded-lg text-xs md:text-sm font-semibold text-slate-800 placeholder:text-[12px] md:placeholder:text-xs placeholder:text-slate-400/60 placeholder:font-bold outline-none focus:border-emerald-500" />
-                              </div>
-                              <div className="grid grid-cols-2 gap-2 md:gap-3">
-                                <input type="text" required placeholder="Kab/Kota" value={address.kota} onChange={e=>setAddress({...address, kota: e.target.value})} className="w-full p-2.5 md:p-3 bg-white border border-slate-200 rounded-lg text-xs md:text-sm font-semibold text-slate-800 placeholder:text-[12px] md:placeholder:text-xs placeholder:text-slate-400/60 placeholder:font-bold outline-none focus:border-emerald-500" />
-                                <input type="text" required placeholder="Provinsi" value={address.provinsi} onChange={e=>setAddress({...address, provinsi: e.target.value})} className="w-full p-2.5 md:p-3 bg-white border border-slate-200 rounded-lg text-xs md:text-sm font-semibold text-slate-800 placeholder:text-[12px] md:placeholder:text-xs placeholder:text-slate-400/60 placeholder:font-bold outline-none focus:border-emerald-500" />
-                              </div>
+                            
+                            <p className="text-[9px] md:text-[10px] font-black text-slate-500 uppercase tracking-widest border-b border-slate-200 pb-1.5 md:pb-2">
+                              Alamat Pengiriman
+                            </p>
+
+                            <div>
+                              <input
+                                type="text"
+                                required
+                                placeholder="Nama Jalan, No Rumah, Blok, RT/RW"
+                                value={address.jalan}
+                                onChange={e=>setAddress({...address, jalan: e.target.value})}
+                                className="w-full p-2.5 md:p-3 bg-white border border-slate-200 rounded-lg text-xs md:text-sm font-semibold text-slate-800 placeholder:text-[12px] md:placeholder:text-xs placeholder:text-slate-400/60 placeholder:font-bold outline-none focus:border-emerald-500"
+                              />
+                            </div>
+
+                            <div className="grid grid-cols-2 gap-2 md:gap-3">
+                              <input
+                                type="text"
+                                required
+                                placeholder="Kelurahan / Desa"
+                                value={address.kelurahan}
+                                onChange={e=>setAddress({...address, kelurahan: e.target.value})}
+                                className="w-full p-2.5 md:p-3 bg-white border border-slate-200 rounded-lg text-xs md:text-sm font-semibold text-slate-800 placeholder:text-[12px] md:placeholder:text-xs placeholder:text-slate-400/60 placeholder:font-bold outline-none focus:border-emerald-500"
+                              />
+
+                              <input
+                                type="text"
+                                required
+                                placeholder="Kecamatan"
+                                value={address.kecamatan}
+                                onChange={e=>setAddress({...address, kecamatan: e.target.value})}
+                                className="w-full p-2.5 md:p-3 bg-white border border-slate-200 rounded-lg text-xs md:text-sm font-semibold text-slate-800 placeholder:text-[12px] md:placeholder:text-xs placeholder:text-slate-400/60 placeholder:font-bold outline-none focus:border-emerald-500"
+                              />
+                            </div>
+
+                            <div>
+                              <input
+                                type="text"
+                                required
+                                placeholder="Kabupaten / Kota"
+                                value={address.kota}
+                                onChange={e=>setAddress({...address, kota: e.target.value})}
+                                className="w-full p-2.5 md:p-3 bg-white border border-slate-200 rounded-lg text-xs md:text-sm font-semibold text-slate-800 placeholder:text-[12px] md:placeholder:text-xs placeholder:text-slate-400/60 placeholder:font-bold outline-none focus:border-emerald-500"
+                              />
+                            </div>
+
                           </div>
                         )}
                     </div>
                   )}
+
+                  {/* METODE PEMBAYARAN */}
+                  <div className="pt-2">
+                    <label className="text-[10px] md:text-xs font-black text-slate-500 uppercase block mb-1.5 md:mb-2">Metode Pembayaran</label>
+                    <div className="flex gap-2 md:gap-3">
+                      
+                      <label className={`flex-1 p-2 md:p-3 border rounded-lg md:rounded-xl text-[10px] md:text-xs font-bold text-center cursor-pointer transition-colors flex flex-col items-center justify-center ${paymentMethod === 'qris' ? 'bg-emerald-50 border-emerald-500 text-emerald-700 shadow-sm' : 'bg-white text-slate-500 hover:bg-slate-50'}`}>
+                        <input type="radio" className="hidden" checked={paymentMethod === 'qris'} onChange={() => setPaymentMethod('qris')} />
+                        <span className="text-sm md:text-lg mb-1">📱</span> QRIS
+                      </label>
+                      
+                      <label className={`flex-1 p-2 md:p-3 border rounded-lg md:rounded-xl text-[10px] md:text-xs font-bold text-center cursor-pointer transition-colors flex flex-col items-center justify-center ${paymentMethod === 'bsi' ? 'bg-emerald-50 border-emerald-500 text-emerald-700 shadow-sm' : 'bg-white text-slate-500 hover:bg-slate-50'}`}>
+                        <input type="radio" className="hidden" checked={paymentMethod === 'bsi'} onChange={() => setPaymentMethod('bsi')} />
+                        <span className="text-sm md:text-lg mb-1">🏦</span> Transfer BSI
+                      </label>
+                      
+                      <label className={`flex-1 p-2 md:p-3 border rounded-lg md:rounded-xl text-[10px] md:text-xs font-bold text-center cursor-pointer transition-colors flex flex-col items-center justify-center ${paymentMethod === 'cash' ? 'bg-emerald-50 border-emerald-500 text-emerald-700 shadow-sm' : 'bg-white text-slate-500 hover:bg-slate-50'}`}>
+                        <input type="radio" className="hidden" checked={paymentMethod === 'cash'} onChange={() => setPaymentMethod('cash')} />
+                        <span className="text-sm md:text-lg mb-1">💵</span> Cash / Tunai
+                      </label>
+
+                    </div>
+                  </div>
 
                   {/* TAMBAHAN PACKING */}
                   <div className="pt-2">
