@@ -978,33 +978,46 @@ export default function CustomerLandingPage() {
       {/* ================================================== */}
       {isCartOpen && (
         <div 
-          // 1. Ubah jadi murni items-end dan p-0 agar mentok rapat ke bawah di semua ukuran layar
           className="fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-sm flex justify-center items-end p-0 cursor-pointer"
           onClick={() => setIsCartOpen(false)} 
         >
           <div 
-            // 2. Ubah rounded hanya di atas, dan hapus animasi zoom agar murni ngeslide dari bawah
             className="bg-white w-full max-w-lg rounded-t-[24px] md:rounded-t-[32px] rounded-b-none h-[85vh] md:max-h-[90vh] flex flex-col shadow-[0_-10px_40px_rgba(0,0,0,0.15)] animate-in slide-in-from-bottom-full duration-300 overflow-hidden cursor-default mb-0"
             onClick={(e) => e.stopPropagation()}
-            onTouchStart={(e) => touchStartY.current = e.touches[0].clientY}
-            onTouchEnd={(e) => {
-              const touchEndY = e.changedTouches[0].clientY;
-              if (touchEndY - touchStartY.current > 80) {
-                setIsCartOpen(false);
-              }
-            }}
           >
             
-            {/* === INDIKATOR SWIPE (GARIS ABU-ABU DI ATAS) === */}
-            <div className="w-full flex justify-center pt-3 pb-1 md:hidden bg-white shrink-0">
-              <div className="w-12 h-1.5 bg-slate-200 rounded-full"></div>
-            </div>
+            {/* === AREA SENSOR SWIPE / TARIK (HANYA DI BAGIAN ATAS KEPALA KERANJANG) === */}
+            <div 
+              className="shrink-0 cursor-grab active:cursor-grabbing bg-white relative z-10"
+              // 1. Sensor untuk HP (Layar Sentuh)
+              onTouchStart={(e) => touchStartY.current = e.touches[0].clientY}
+              onTouchEnd={(e) => {
+                if (e.changedTouches[0].clientY - touchStartY.current > 50) setIsCartOpen(false);
+              }}
+              // 2. Sensor untuk Laptop/PC (Tarikan Mouse)
+              onMouseDown={(e) => touchStartY.current = e.clientY}
+              onMouseUp={(e) => {
+                if (e.clientY - touchStartY.current > 50) setIsCartOpen(false);
+              }}
+            >
+              {/* Indikator Garis Tarik */}
+              <div className="w-full flex justify-center pt-3 pb-1 md:hidden">
+                <div className="w-12 h-1.5 bg-slate-200 rounded-full"></div>
+              </div>
 
-            <div className="p-4 pt-2 md:p-6 md:pt-6 border-b border-slate-100 flex justify-between items-center shrink-0 bg-white">
-              <h2 className="font-black text-lg md:text-xl text-slate-800 flex items-center"><ShoppingCart className="w-4 h-4 md:w-5 md:h-5 mr-2 text-emerald-500"/> Keranjang Belanja</h2>
-              <button onClick={() => setIsCartOpen(false)} className="bg-slate-100 p-1.5 md:p-2 rounded-full hover:bg-rose-100 hover:text-rose-600 transition"><X className="w-4 h-4 md:w-5 md:h-5"/></button>
+              {/* Judul Keranjang */}
+              <div className="p-4 pt-2 md:p-6 md:pt-6 border-b border-slate-100 flex justify-between items-center">
+                <h2 className="font-black text-lg md:text-xl text-slate-800 flex items-center">
+                  <ShoppingCart className="w-4 h-4 md:w-5 md:h-5 mr-2 text-emerald-500"/> Keranjang Belanja
+                </h2>
+                <button onClick={() => setIsCartOpen(false)} className="bg-slate-100 p-1.5 md:p-2 rounded-full hover:bg-rose-100 hover:text-rose-600 transition">
+                  <X className="w-4 h-4 md:w-5 md:h-5"/>
+                </button>
+              </div>
             </div>
+            {/* ========================================================= */}
 
+            {/* AREA KONTEN DAFTAR MENU (Aman di-scroll ke bawah) */}
             <div className="p-4 md:p-6 overflow-y-auto flex-1 bg-slate-50/50">
               {cart.length === 0 ? (
                 <div className="text-center py-8 md:py-10 flex flex-col items-center">
