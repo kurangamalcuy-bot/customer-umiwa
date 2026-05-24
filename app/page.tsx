@@ -310,8 +310,9 @@ export default function CustomerLandingPage() {
     if (cart.length === 0) return alert("Keranjang masih kosong.");
 
     if (deliveryMode === 'delivery' && (courier === 'ahsan' || courier === 'umiwa')) {
-        if (!address.jalan || !address.kelurahan || !address.kecamatan || !address.kota || !address.provinsi) {
-            return alert("Mohon lengkapi semua rincian alamat pengiriman Anda (Jalan, Kelurahan, Kecamatan, Kota, & Provinsi).");
+        // Hapus syarat provinsi dari kodenya
+        if (!address.jalan || !address.kelurahan || !address.kecamatan || !address.kota) {
+            return alert("Mohon lengkapi semua rincian alamat pengiriman Anda (Jalan, Kelurahan, Kecamatan, & Kota).");
         }
     }
 
@@ -325,7 +326,8 @@ export default function CustomerLandingPage() {
         if (courier === 'gosend') message += `Kurir: Gosend / Grab (Pesan Sendiri)\n`;
         
         if (courier === 'ahsan' || courier === 'umiwa') {
-            message += `\n*Alamat Pengiriman:*\n${address.jalan}\nKel. ${address.kelurahan}, Kec. ${address.kecamatan}\n${address.kota}, Prov. ${address.provinsi}\n`;
+            // Hilangkan bagian Prov. ${address.provinsi}
+            message += `\n*Alamat Pengiriman:*\n${address.jalan}\nKel. ${address.kelurahan}, Kec. ${address.kecamatan}\n${address.kota}\n`;
         }
     }
 
