@@ -428,6 +428,23 @@ export default function CustomerLandingPage() {
               <ShoppingCart className="w-3.5 h-3.5 md:w-5 md:h-5 mr-1 md:mr-1.5 text-amber-400"/> Harga Terjangkau
             </span>
           </div>
+
+          {/* === TOMBOL WA LANGSUNG DI HERO SECTION === */}
+          <div className="mt-6 md:mt-8 animate-in slide-in-from-bottom-4 duration-700 delay-200">
+            <a 
+              href="https://wa.me/6287788472837?text=Halo%20Admin%20Umiwa%2C%20saya%20tertarik%20mau%20pesan%20pempeknya%20nih!" 
+              target="_blank" 
+              rel="noopener noreferrer"
+              className="inline-flex items-center justify-center bg-[#25D366] text-white text-xs md:text-sm font-black px-6 py-3.5 md:px-8 md:py-4 rounded-full shadow-[0_10px_25px_rgba(37,211,102,0.4)] hover:bg-[#20bd5a] hover:scale-105 active:scale-95 transition-all border-2 border-white/20"
+            >
+              <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="currentColor" stroke="none" className="w-4 h-4 md:w-5 md:h-5 mr-2">
+                 <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.405-.883-.733-1.48-1.638-1.653-1.935-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51a12.8 12.8 0 0 0-.57-.01c-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 0 1-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 0 1-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 0 1 2.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0 0 12.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 0 0 5.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 0 0-3.48-8.413Z"/>
+              </svg>
+              CHAT ADMIN VIA WA
+            </a>
+          </div>
+          {/* ========================================= */}
+
         </div>
       </section>
 
@@ -767,13 +784,13 @@ export default function CustomerLandingPage() {
                  </a>
                  
                  {/* GRABFOOD */}
-                 <a href="#" className="w-[47%] md:w-auto bg-white border border-slate-200 text-slate-800 px-3 py-2 md:px-5 md:py-2.5 rounded-xl md:rounded-2xl font-bold text-[11px] md:text-sm flex items-center justify-center hover:border-emerald-500 hover:text-emerald-600 hover:shadow-md transition-all active:scale-95">
+                 <a href="https://r.grab.com/o/iU3miUnm" className="w-[47%] md:w-auto bg-white border border-slate-200 text-slate-800 px-3 py-2 md:px-5 md:py-2.5 rounded-xl md:rounded-2xl font-bold text-[11px] md:text-sm flex items-center justify-center hover:border-emerald-500 hover:text-emerald-600 hover:shadow-md transition-all active:scale-95">
                     <img src="/logo-grabfood.png" alt="GrabFood" className="w-4 h-4 md:w-6 md:h-6 mr-1.5 md:mr-2 object-contain" onError={(e:any) => e.target.src = 'https://via.placeholder.com/24?text=Gr'} />
                     GrabFood
                  </a>
                  
                  {/* TIKTOK SHOP */}
-                 <a href="#" className="w-full md:w-auto bg-white border border-slate-200 text-slate-800 px-3 py-2 md:px-5 md:py-2.5 rounded-xl md:rounded-2xl font-bold text-[11px] md:text-sm flex items-center justify-center hover:border-emerald-500 hover:text-emerald-600 hover:shadow-md transition-all active:scale-95">
+                 <a href="https://vt.tiktok.com/ZSxmwuCpD/?page=Mall" className="w-full md:w-auto bg-white border border-slate-200 text-slate-800 px-3 py-2 md:px-5 md:py-2.5 rounded-xl md:rounded-2xl font-bold text-[11px] md:text-sm flex items-center justify-center hover:border-emerald-500 hover:text-emerald-600 hover:shadow-md transition-all active:scale-95">
                     <img src="/logo-tiktokshop.png" alt="TikTok Shop" className="w-4 h-4 md:w-6 md:h-6 mr-1.5 md:mr-2 object-contain" onError={(e:any) => e.target.src = 'https://via.placeholder.com/24?text=TK'} />
                     TikTok Shop
                  </a>
@@ -812,15 +829,15 @@ export default function CustomerLandingPage() {
           </p>
           
           <div className="flex flex-wrap justify-center gap-3 md:gap-4 mb-8 md:mb-12">
-             <a href="#" className="bg-slate-800 p-3 md:p-4 rounded-xl md:rounded-2xl hover:bg-slate-700 transition-all hover:scale-105 shadow-lg flex items-center justify-center border border-slate-700 hover:border-slate-400">
+             <a href="https://www.tiktok.com/@pempek.umiwa" className="bg-slate-800 p-3 md:p-4 rounded-xl md:rounded-2xl hover:bg-slate-700 transition-all hover:scale-105 shadow-lg flex items-center justify-center border border-slate-700 hover:border-slate-400">
                 <img src="/icon-tiktok.png" alt="TikTok" className="h-6 md:h-10 w-auto object-contain transition-all" onError={(e:any) => e.target.src = 'https://via.placeholder.com/32?text=TK'} />
              </a>
              
-             <a href="#" className="bg-slate-800 p-3 md:p-4 rounded-xl md:rounded-2xl hover:bg-slate-700 transition-all hover:scale-105 shadow-lg flex items-center justify-center border border-slate-700 hover:border-rose-500">
+             <a href="https://www.instagram.com/pempekumiwa_?igsh=NzU1M20ycnJreGk5&utm_source=qr" className="bg-slate-800 p-3 md:p-4 rounded-xl md:rounded-2xl hover:bg-slate-700 transition-all hover:scale-105 shadow-lg flex items-center justify-center border border-slate-700 hover:border-rose-500">
                 <img src="/icon-instagram.png" alt="Instagram" className="h-6 md:h-10 w-auto object-contain transition-all" onError={(e:any) => e.target.src = 'https://via.placeholder.com/32?text=IG'} />
              </a>
 
-             <a href="#" className="bg-slate-800 p-3 md:p-4 rounded-xl md:rounded-2xl hover:bg-slate-700 transition-all hover:scale-105 shadow-lg flex items-center justify-center border border-slate-700 hover:border-red-500">
+             <a href="https://youtube.com/@pempekumiwa?si=XpN1PL7PZ2uDNXXW" className="bg-slate-800 p-3 md:p-4 rounded-xl md:rounded-2xl hover:bg-slate-700 transition-all hover:scale-105 shadow-lg flex items-center justify-center border border-slate-700 hover:border-red-500">
                 <img src="/icon-youtube.png" alt="YouTube" className="h-6 md:h-10 w-auto object-contain transition-all" onError={(e:any) => e.target.src = 'https://via.placeholder.com/32?text=YT'} />
              </a>
 
@@ -828,7 +845,7 @@ export default function CustomerLandingPage() {
                 <img src="/icon-x.png" alt="X" className="h-6 md:h-10 w-auto object-contain transition-all" onError={(e:any) => e.target.src = 'https://via.placeholder.com/32?text=X'} />
              </a>
 
-             <a href="#" className="bg-slate-800 p-3 md:p-4 rounded-xl md:rounded-2xl hover:bg-slate-700 transition-all hover:scale-105 shadow-lg flex items-center justify-center border border-slate-700 hover:border-slate-400">
+             <a href="https://www.threads.com/@pempekumiwa_?igshid=NTc4MTIwNjQ2YQ==" className="bg-slate-800 p-3 md:p-4 rounded-xl md:rounded-2xl hover:bg-slate-700 transition-all hover:scale-105 shadow-lg flex items-center justify-center border border-slate-700 hover:border-slate-400">
                 <img src="/icon-threads.png" alt="Threads" className="h-6 md:h-10 w-auto object-contain transition-all" onError={(e:any) => e.target.src = 'https://via.placeholder.com/32?text=TH'} />
              </a>
           </div>
@@ -937,8 +954,15 @@ export default function CustomerLandingPage() {
       {/* MODAL CHECKOUT & FORM PEMBELI */}
       {/* ================================================== */}
       {isCartOpen && (
-        <div className="fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-sm flex justify-center items-end md:items-center p-0 md:p-4">
-          <div className="bg-white w-full max-w-lg rounded-t-[24px] md:rounded-[32px] h-[85vh] md:max-h-[90vh] flex flex-col shadow-2xl animate-in slide-in-from-bottom-full md:zoom-in-95 duration-300 overflow-hidden">
+        <div 
+          className="fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-sm flex justify-center items-end md:items-center p-0 md:p-4 cursor-pointer"
+          onClick={() => setIsCartOpen(false)} 
+        >
+          {/* Tambahan e.stopPropagation() ini WAJIB supaya pas ngeklik di area putih, keranjangnya nggak ikut ketutup */}
+          <div 
+            className="bg-white w-full max-w-lg rounded-t-[24px] md:rounded-[32px] h-[85vh] md:max-h-[90vh] flex flex-col shadow-2xl animate-in slide-in-from-bottom-full md:zoom-in-95 duration-300 overflow-hidden cursor-default"
+            onClick={(e) => e.stopPropagation()}
+          >
             
             <div className="p-4 md:p-6 border-b border-slate-100 flex justify-between items-center shrink-0 bg-white">
               <h2 className="font-black text-lg md:text-xl text-slate-800 flex items-center"><ShoppingCart className="w-4 h-4 md:w-5 md:h-5 mr-2 text-emerald-500"/> Keranjang Belanja</h2>
@@ -961,11 +985,22 @@ export default function CustomerLandingPage() {
                           <p className="text-xs md:text-sm font-black text-slate-800 leading-tight">{c.name}</p>
                           <p className="text-[10px] md:text-xs font-bold text-emerald-600 mt-0.5 md:mt-1">{formatIDR(c.price)}</p>
                        </div>
+                       
                        <div className="flex items-center bg-slate-50 rounded-lg md:rounded-xl p-1 border border-slate-200 ml-2 shrink-0">
                           <button onClick={() => updateQty(c.name, -1)} className="w-6 h-6 md:w-8 md:h-8 flex items-center justify-center text-slate-500 font-black">-</button>
                           <span className="w-6 md:w-8 text-center text-xs md:text-sm font-black text-slate-800">{c.qty}</span>
                           <button onClick={() => updateQty(c.name, 1)} className="w-6 h-6 md:w-8 md:h-8 flex items-center justify-center text-slate-500 font-black">+</button>
                        </div>
+
+                       {/* === TOMBOL HAPUS DITARUH DI SINI === */}
+                       <button 
+                         onClick={() => setCart(cart.filter(item => item.name !== c.name))} 
+                         className="ml-2 md:ml-3 p-1.5 md:p-2 text-slate-400 hover:text-rose-600 hover:bg-rose-50 rounded-lg md:rounded-xl transition-colors active:scale-95 shrink-0"
+                         title="Hapus dari keranjang"
+                       >
+                         <X className="w-4 h-4 md:w-5 md:h-5" />
+                       </button>
+
                     </div>
                   ))}
                 </div>
@@ -990,8 +1025,20 @@ export default function CustomerLandingPage() {
                         <input type="radio" className="hidden" checked={deliveryMode === 'pickup'} onChange={() => setDeliveryMode('pickup')} />
                         🏪 Ambil Sendiri
                       </label>
+                      
                       <label className={`flex-1 p-2 md:p-3 border rounded-lg md:rounded-xl text-[10px] md:text-xs font-bold text-center cursor-pointer ${deliveryMode === 'delivery' ? 'bg-emerald-50 border-emerald-500 text-emerald-700' : 'bg-white text-slate-500'}`}>
-                        <input type="radio" className="hidden" checked={deliveryMode === 'delivery'} onChange={() => setDeliveryMode('delivery')} />
+                        <input 
+                          type="radio" 
+                          className="hidden" 
+                          checked={deliveryMode === 'delivery'} 
+                          onChange={() => {
+                            setDeliveryMode('delivery');
+                            // Delay sedikit agar menu dirender dulu, baru di-scroll
+                            setTimeout(() => {
+                              document.getElementById('kurir-section')?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                            }, 150);
+                          }} 
+                        />
                         🛵 Dikirim
                       </label>
                     </div>
@@ -999,7 +1046,7 @@ export default function CustomerLandingPage() {
 
                   {/* OPSI KURIR JIKA DIKIRIM */}
                   {deliveryMode === 'delivery' && (
-                    <div className="mt-3 md:mt-4 space-y-2 md:space-y-3 animate-in slide-in-from-top-2">
+                    <div id="kurir-section" className="mt-3 md:mt-4 space-y-2 md:space-y-3 animate-in slide-in-from-top-2">
                         <label className="text-[9px] md:text-[10px] font-black text-slate-500 uppercase block mb-1">Pilih Kurir</label>
                         
                         <label className={`block p-2.5 md:p-3 border rounded-lg md:rounded-xl cursor-pointer ${courier === 'ahsan' ? 'bg-emerald-50 border-emerald-500' : 'bg-white border-slate-200'}`}>
@@ -1173,19 +1220,29 @@ export default function CustomerLandingPage() {
 
                   {/* TAMBAHAN PACKING */}
                   <div className="pt-2">
-                    {/* Judul diubah agar langsung merujuk ke Thermal Packing */}
                     <label className="text-[10px] md:text-xs font-black text-slate-500 uppercase block mb-1">Gunakan Thermal Packing?</label>
                     
-                    {/* NOTE TAMBAHAN NOTE BARU UNTUK KONSUMEN */}
                     <p className="text-[10px] md:text-xs text-slate-400 mb-2.5 leading-relaxed">
                       Berfungsi menjaga pempek frozen tetap dingin, beku, dan fresh selama pengiriman.
                     </p>
                     
                     <div className="flex gap-2 md:gap-3">
                       <label className={`flex-1 p-2 md:p-3 border rounded-lg md:rounded-xl text-[10px] md:text-xs font-bold text-center cursor-pointer transition-colors ${addPacking === true ? 'bg-emerald-50 border-emerald-500 text-emerald-700' : 'bg-white text-slate-500 hover:bg-slate-50'}`}>
-                        <input type="radio" className="hidden" checked={addPacking === true} onChange={() => setAddPacking(true)} />
+                        <input 
+                          type="radio" 
+                          className="hidden" 
+                          checked={addPacking === true} 
+                          onChange={() => {
+                            setAddPacking(true);
+                            // Delay sedikit agar menu dirender dulu, baru di-scroll
+                            setTimeout(() => {
+                              document.getElementById('packing-section')?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                            }, 150);
+                          }} 
+                        />
                         📦 Ya
                       </label>
+
                       <label className={`flex-1 p-2 md:p-3 border rounded-lg md:rounded-xl text-[10px] md:text-xs font-bold text-center cursor-pointer transition-colors ${addPacking === false ? 'bg-rose-50 border-rose-500 text-rose-700' : 'bg-white text-slate-500 hover:bg-slate-50'}`}>
                         <input type="radio" className="hidden" checked={addPacking === false} onChange={() => setAddPacking(false)} />
                         ❌ Tidak
@@ -1194,7 +1251,7 @@ export default function CustomerLandingPage() {
 
                     {/* SUB-MENU PILIHAN PACKING (MUNCUL JIKA KLIK "YA") */}
                     {addPacking && (
-                      <div className="mt-3 grid grid-cols-2 gap-2 md:gap-3 animate-in slide-in-from-top-2">
+                      <div id="packing-section" className="mt-3 grid grid-cols-2 gap-2 md:gap-3 animate-in slide-in-from-top-2">
                         
                         {/* Pilihan 1: POUCH */}
                         <label className={`border rounded-lg md:rounded-xl p-3 cursor-pointer flex flex-col items-center text-center transition-all ${packingOption === 'pouch' ? 'border-emerald-500 bg-emerald-50 shadow-sm' : 'border-slate-200 bg-white hover:bg-slate-50'}`}>
