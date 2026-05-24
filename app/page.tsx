@@ -39,8 +39,10 @@ export default function CustomerLandingPage() {
     provinsi: ''
   });
   
+  // === TAMBAHKAN BARIS INI UNTUK SENSOR SWIPE ===
+  const touchStartY = React.useRef(0);
+  
   // Fungsi untuk tombol panah Testimoni di Laptop/PC
-  const testiScrollRef = React.useRef<HTMLDivElement>(null);
   const scrollTestimonials = (direction: 'left' | 'right') => {
     if (testiScrollRef.current) {
       const scrollAmount = window.innerWidth > 768 ? 400 : 300;
@@ -48,35 +50,43 @@ export default function CustomerLandingPage() {
     }
   };
 
-  // === KODE BARU: AUTO SCROLL TESTIMONI (PING-PONG) ===
-  const scrollDirection = React.useRef(1); // 1 = kanan, -1 = kiri
+  // === KODE BARU: AUTO SCROLL SUPER SMOOTH (PING-PONG) ===
+  const quickLinksRef = React.useRef<HTMLDivElement>(null);
+  const quickLinksDir = React.useRef(1);
+  
+  const testiScrollRef = React.useRef<HTMLDivElement>(null);
+  const testiDir = React.useRef(1);
 
   useEffect(() => {
-    const container = testiScrollRef.current;
-    if (!container) return;
+    let animationId1: number;
+    let animationId2: number;
 
-    const autoScroll = setInterval(() => {
-      // Cek apakah sudah mentok kanan (toleransi 10px)
-      if (container.scrollLeft + container.clientWidth >= container.scrollWidth - 10) {
-        scrollDirection.current = -1; // Balik arah ke kiri
-      } 
-      // Cek apakah sudah mentok kiri (toleransi 10px)
-      else if (container.scrollLeft <= 10) {
-        scrollDirection.current = 1; // Balik arah ke kanan
+    const animateScroll = (container: HTMLDivElement | null, dirRef: React.MutableRefObject<number>, setAnimId: (id: number) => void) => {
+      if (!container) return;
+
+      // Cek batas kanan dan kiri untuk mantul (ping-pong)
+      if (container.scrollLeft + container.clientWidth >= container.scrollWidth - 1) {
+        dirRef.current = -1; // Balik kiri
+      } else if (container.scrollLeft <= 0) {
+        dirRef.current = 1; // Balik kanan
       }
 
-      // Tentukan seberapa jauh gesernya (sesuaikan dengan tombol manual)
-      const scrollAmount = window.innerWidth > 768 ? 400 : 300;
-      
-      // Eksekusi geser mulus
-      container.scrollBy({ 
-        left: scrollDirection.current * scrollAmount, 
-        behavior: 'smooth' 
-      });
-    }, 2000); // Angka 3000 artinya geser otomatis setiap 3 detik. Bos bisa ubah!
+      // Geser 1 pixel per frame (Sangat halus, sekitar 60px per detik)
+      container.scrollLeft += dirRef.current * 0.6;
 
-    // Bersihkan interval kalau pindah halaman supaya memori tidak bocor
-    return () => clearInterval(autoScroll);
+      // Looping animasi terus menerus tanpa henti
+      const id = requestAnimationFrame(() => animateScroll(container, dirRef, setAnimId));
+      setAnimId(id);
+    };
+
+    // Nyalakan mesin animasi untuk kedua bagian
+    animateScroll(quickLinksRef.current, quickLinksDir, (id) => animationId1 = id);
+    animateScroll(testiScrollRef.current, testiDir, (id) => animationId2 = id);
+
+    return () => {
+      cancelAnimationFrame(animationId1);
+      cancelAnimationFrame(animationId2);
+    };
   }, []);
   // ====================================================
 
@@ -450,7 +460,11 @@ export default function CustomerLandingPage() {
 
       {/* SHORTCUT MENU / QUICK LINKS */}
       <section className="max-w-5xl mx-auto px-4 md:px-6 -mt-6 md:-mt-8 relative z-30 mb-8 md:mb-10">
-        <div className="bg-white/90 backdrop-blur-md rounded-[24px] md:rounded-[32px] shadow-xl p-2 md:p-4 border border-white/50 flex overflow-x-auto gap-2 md:gap-3 snap-x scroll-smooth items-center" style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}>
+        <div 
+          ref={quickLinksRef}
+          className="bg-white/90 backdrop-blur-md rounded-[24px] md:rounded-[32px] shadow-xl p-2 md:p-4 border border-white/50 flex overflow-x-auto gap-2 md:gap-3 items-center" 
+          style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
+        >
            <a href="#testimoni" onClick={(e) => scrollToSection(e, 'testimoni')} className="shrink-0 flex items-center bg-white hover:bg-emerald-500 text-slate-700 hover:text-white px-3 py-2 md:px-5 md:py-3 rounded-xl md:rounded-2xl text-[10px] md:text-xs font-black transition-all border-2 border-slate-100 hover:border-emerald-500 shadow-sm hover:shadow-md cursor-pointer active:scale-95 group">
              <Star className="w-3 h-3 md:w-4 md:h-4 mr-1.5 md:mr-2 text-amber-400 group-hover:text-white"/> Testimoni
            </a>
@@ -632,7 +646,7 @@ export default function CustomerLandingPage() {
 
           <div 
             ref={testiScrollRef}
-            className="flex overflow-x-auto flex-nowrap gap-3 md:gap-6 pb-4 md:pb-6 snap-x snap-mandatory scroll-smooth relative z-10" 
+            className="flex overflow-x-auto flex-nowrap gap-3 md:gap-6 pb-4 md:pb-6 relative z-10" 
             style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
           >
             {TESTIMONIALS.map((testi, i) => (
@@ -958,13 +972,25 @@ export default function CustomerLandingPage() {
           className="fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-sm flex justify-center items-end md:items-center p-0 md:p-4 cursor-pointer"
           onClick={() => setIsCartOpen(false)} 
         >
-          {/* Tambahan e.stopPropagation() ini WAJIB supaya pas ngeklik di area putih, keranjangnya nggak ikut ketutup */}
           <div 
             className="bg-white w-full max-w-lg rounded-t-[24px] md:rounded-[32px] h-[85vh] md:max-h-[90vh] flex flex-col shadow-2xl animate-in slide-in-from-bottom-full md:zoom-in-95 duration-300 overflow-hidden cursor-default"
             onClick={(e) => e.stopPropagation()}
+            onTouchStart={(e) => touchStartY.current = e.touches[0].clientY}
+            onTouchEnd={(e) => {
+              const touchEndY = e.changedTouches[0].clientY;
+              // Jika jari ditarik ke bawah lebih dari 80 pixel, keranjang otomatis tutup
+              if (touchEndY - touchStartY.current > 80) {
+                setIsCartOpen(false);
+              }
+            }}
           >
             
-            <div className="p-4 md:p-6 border-b border-slate-100 flex justify-between items-center shrink-0 bg-white">
+            {/* === INDIKATOR SWIPE (GARIS ABU-ABU DI ATAS) === */}
+            <div className="w-full flex justify-center pt-3 pb-1 md:hidden bg-white shrink-0">
+              <div className="w-12 h-1.5 bg-slate-200 rounded-full"></div>
+            </div>
+
+            <div className="p-4 pt-2 md:p-6 md:pt-6 border-b border-slate-100 flex justify-between items-center shrink-0 bg-white">
               <h2 className="font-black text-lg md:text-xl text-slate-800 flex items-center"><ShoppingCart className="w-4 h-4 md:w-5 md:h-5 mr-2 text-emerald-500"/> Keranjang Belanja</h2>
               <button onClick={() => setIsCartOpen(false)} className="bg-slate-100 p-1.5 md:p-2 rounded-full hover:bg-rose-100 hover:text-rose-600 transition"><X className="w-4 h-4 md:w-5 md:h-5"/></button>
             </div>
@@ -1084,7 +1110,7 @@ export default function CustomerLandingPage() {
                             <span className={`w-3 h-3 md:w-4 md:h-4 rounded-full border-2 mr-2 flex items-center justify-center ${courier === 'gosend' ? 'border-emerald-500' : 'border-slate-300'}`}>
                               {courier === 'gosend' && <span className="w-1.5 h-1.5 md:w-2 md:h-2 rounded-full bg-emerald-500"></span>}
                             </span>
-                            <span className="font-bold text-[11px] md:text-sm text-slate-800">Gosend (Pesan Sendiri)</span>
+                            <span className="font-bold text-[11px] md:text-sm text-slate-800">Gosend, dll (Pesan Sendiri)</span>
                           </div>
                           <p className="text-[10px] text-slate-500 pl-6 leading-relaxed">Konsumen memesan kurir ojol sendiri ke titik lokasi kami setelah pesanan kami siapkan.</p>
                         </label>
