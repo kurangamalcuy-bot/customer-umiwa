@@ -72,7 +72,7 @@ export default function CustomerLandingPage() {
       }
 
       // Geser 1 pixel per frame (Sangat halus, sekitar 60px per detik)
-      container.scrollLeft += dirRef.current * 0.6;
+      container.scrollLeft += dirRef.current * 1;
 
       // Looping animasi terus menerus tanpa henti
       const id = requestAnimationFrame(() => animateScroll(container, dirRef, setAnimId));
@@ -302,12 +302,15 @@ export default function CustomerLandingPage() {
   const formatIDR = (num: number) => new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR', minimumFractionDigits: 0 }).format(num || 0);
 
   // Hitungan Tambahan (Pengiriman & Packing)
+  // Kembalikan ke kode asli Bos yang bersih dari message +=
   let shippingFee = 0;
   if (deliveryMode === 'delivery') {
       if (courier === 'ahsan') shippingFee = 12000;
       if (courier === 'umiwa') shippingFee = 9000;
+      // Khusus paxel ongkirnya 0 karena nanti dihitung manual via WA
+      if (courier === 'paxel') shippingFee = 0; 
   }
-  
+
   let packingFee = 0;
   if (addPacking) {
       packingFee = packingOption === 'pouch' ? 2500 : 3000;
@@ -319,8 +322,7 @@ export default function CustomerLandingPage() {
     if (!custName || !custPhone) return alert("Mohon isi Nama dan No. WhatsApp Anda terlebih dahulu.");
     if (cart.length === 0) return alert("Keranjang masih kosong.");
 
-    if (deliveryMode === 'delivery' && (courier === 'ahsan' || courier === 'umiwa')) {
-        // Hapus syarat provinsi dari kodenya
+    if (deliveryMode === 'delivery' && (courier === 'ahsan' || courier === 'umiwa' || courier === 'paxel')) {
         if (!address.jalan || !address.kelurahan || !address.kecamatan || !address.kota) {
             return alert("Mohon lengkapi semua rincian alamat pengiriman Anda (Jalan, Kelurahan, Kecamatan, & Kota).");
         }
@@ -353,8 +355,15 @@ export default function CustomerLandingPage() {
     });
 
     message += `\nSubtotal: ${formatIDR(totalCart)}\n`;
-    if (deliveryMode === 'delivery') message += `Ongkir: ${formatIDR(shippingFee)}\n`;
+    if (deliveryMode === 'delivery' && courier !== 'paxel') message += `Ongkir: ${formatIDR(shippingFee)}\n`;
     if (addPacking) message += `Packing: ${formatIDR(packingFee)}\n`;
+
+    // Ubah bagian ini agar ada teks khusus Paxel
+    if (deliveryMode === 'delivery' && courier === 'paxel') {
+        message += `\n*GRAND TOTAL: ${formatIDR(grandTotal)} + Ongkir Paxel (Diinfokan WA)*\n\n`;
+    } else {
+        message += `\n*GRAND TOTAL: ${formatIDR(grandTotal)}*\n\n`;
+    }
 
     message += `\n*GRAND TOTAL: ${formatIDR(grandTotal)}*\n\n`;
     let paymentText = '';
@@ -969,16 +978,17 @@ export default function CustomerLandingPage() {
       {/* ================================================== */}
       {isCartOpen && (
         <div 
-          className="fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-sm flex justify-center items-end md:items-center p-0 md:p-4 cursor-pointer"
+          // 1. Ubah jadi murni items-end dan p-0 agar mentok rapat ke bawah di semua ukuran layar
+          className="fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-sm flex justify-center items-end p-0 cursor-pointer"
           onClick={() => setIsCartOpen(false)} 
         >
           <div 
-            className="bg-white w-full max-w-lg rounded-t-[24px] md:rounded-[32px] h-[85vh] md:max-h-[90vh] flex flex-col shadow-2xl animate-in slide-in-from-bottom-full md:zoom-in-95 duration-300 overflow-hidden cursor-default"
+            // 2. Ubah rounded hanya di atas, dan hapus animasi zoom agar murni ngeslide dari bawah
+            className="bg-white w-full max-w-lg rounded-t-[24px] md:rounded-t-[32px] rounded-b-none h-[85vh] md:max-h-[90vh] flex flex-col shadow-[0_-10px_40px_rgba(0,0,0,0.15)] animate-in slide-in-from-bottom-full duration-300 overflow-hidden cursor-default mb-0"
             onClick={(e) => e.stopPropagation()}
             onTouchStart={(e) => touchStartY.current = e.touches[0].clientY}
             onTouchEnd={(e) => {
               const touchEndY = e.changedTouches[0].clientY;
-              // Jika jari ditarik ke bawah lebih dari 80 pixel, keranjang otomatis tutup
               if (touchEndY - touchStartY.current > 80) {
                 setIsCartOpen(false);
               }
@@ -1075,48 +1085,73 @@ export default function CustomerLandingPage() {
                     <div id="kurir-section" className="mt-3 md:mt-4 space-y-2 md:space-y-3 animate-in slide-in-from-top-2">
                         <label className="text-[9px] md:text-[10px] font-black text-slate-500 uppercase block mb-1">Pilih Kurir</label>
                         
-                        <label className={`block p-2.5 md:p-3 border rounded-lg md:rounded-xl cursor-pointer ${courier === 'ahsan' ? 'bg-emerald-50 border-emerald-500' : 'bg-white border-slate-200'}`}>
-                          <div className="flex items-center mb-1">
+                        {/* 1. AHSAN XPRESS */}
+                        <label className={`block p-2.5 md:p-3 border rounded-lg md:rounded-xl cursor-pointer transition-all ${courier === 'ahsan' ? 'bg-emerald-50 border-emerald-500 shadow-sm' : 'bg-white border-slate-200 hover:bg-slate-50'}`}>
+                          <div className="flex items-center flex-wrap mb-1.5 gap-y-1">
                             <input type="radio" className="hidden" checked={courier === 'ahsan'} onChange={() => setCourier('ahsan')} />
-                            <span className={`w-3 h-3 md:w-4 md:h-4 rounded-full border-2 mr-2 flex items-center justify-center ${courier === 'ahsan' ? 'border-emerald-500' : 'border-slate-300'}`}>
+                            <span className={`w-3 h-3 md:w-4 md:h-4 rounded-full border-2 mr-2 flex items-center justify-center shrink-0 ${courier === 'ahsan' ? 'border-emerald-500' : 'border-slate-300'}`}>
                               {courier === 'ahsan' && <span className="w-1.5 h-1.5 md:w-2 md:h-2 rounded-full bg-emerald-500"></span>}
                             </span>
-                            <span className="font-bold text-[11px] md:text-sm text-slate-800">
-                              Ahsan Xpress - Sameday (Rp 12rb)
-                            </span>
+                            <span className="font-bold text-[11px] md:text-sm text-slate-800 mr-2">Ahsan Xpress (Rp 12rb)</span>
+                            {/* BADGE HIGHLIGHT */}
+                            <span className="bg-sky-100 text-sky-700 border border-sky-200 px-1.5 md:px-2 py-0.5 rounded text-[8px] md:text-[9px] font-black uppercase tracking-wider">📍 Se-Bandung Raya</span>
                           </div>
-
-                          <p className="text-[10px] text-slate-500 pl-6 leading-relaxed">
-                            Ongkir flat Rp12rb untuk area Bandung Raya (Kota Bandung, Cimahi, Kab. Bandung, Kab. Bandung Barat, dan sebagian Sumedang). 
-                            Order masuk maksimal jam 10 pagi, lebih dari itu diproses besok. 
+                          <p className="text-[11px] md:text-xs font-normal text-slate-600 pl-5 md:pl-6 leading-relaxed">
+                            Ongkir flat untuk area <b className="text-slate-700">Kota Bandung, Cimahi, Kab. Bandung, KBB, & sebagian Sumedang</b>. Order masuk maksimal jam 10 pagi, lebih dari itu diproses besok. 
                             Pengiriman ke alamat tujuan mulai jam 15.00 sampai selesai.
                           </p>
                         </label>
 
-                        <label className={`block p-2.5 md:p-3 border rounded-lg md:rounded-xl cursor-pointer ${courier === 'umiwa' ? 'bg-emerald-50 border-emerald-500' : 'bg-white border-slate-200'}`}>
-                          <div className="flex items-center mb-1">
+                        {/* 2. KURIR UMIWA */}
+                        <label className={`block p-2.5 md:p-3 border rounded-lg md:rounded-xl cursor-pointer transition-all ${courier === 'umiwa' ? 'bg-emerald-50 border-emerald-500 shadow-sm' : 'bg-white border-slate-200 hover:bg-slate-50'}`}>
+                          <div className="flex items-center flex-wrap mb-1.5 gap-y-1">
                             <input type="radio" className="hidden" checked={courier === 'umiwa'} onChange={() => setCourier('umiwa')} />
-                            <span className={`w-3 h-3 md:w-4 md:h-4 rounded-full border-2 mr-2 flex items-center justify-center ${courier === 'umiwa' ? 'border-emerald-500' : 'border-slate-300'}`}>
+                            <span className={`w-3 h-3 md:w-4 md:h-4 rounded-full border-2 mr-2 flex items-center justify-center shrink-0 ${courier === 'umiwa' ? 'border-emerald-500' : 'border-slate-300'}`}>
                               {courier === 'umiwa' && <span className="w-1.5 h-1.5 md:w-2 md:h-2 rounded-full bg-emerald-500"></span>}
                             </span>
-                            <span className="font-bold text-[11px] md:text-sm text-slate-800">Kurir Umiwa - Instant (Rp 9rb)</span>
+                            <span className="font-bold text-[11px] md:text-sm text-slate-800 mr-2">Kurir Umiwa (Rp 9rb)</span>
+                            {/* BADGE HIGHLIGHT */}
+                            <span className="bg-emerald-100 text-emerald-700 border border-emerald-200 px-1.5 md:px-2 py-0.5 rounded text-[8px] md:text-[9px] font-black uppercase tracking-wider">🛵 Khusus Cimahi</span>
                           </div>
-                          <p className="text-[10px] text-slate-500 pl-6 leading-relaxed">Khusus pengiriman di Cimahi aja. Pesanan diantar langsung ke tempat tujuan oleh kurir dari Pempek Umiwa.</p>
+                          <p className="text-[11px] md:text-xs font-normal text-slate-600 pl-5 md:pl-6 leading-relaxed">
+                            Pesanan diantar langsung ke tempat tujuan oleh kurir dari Pempek Umiwa, <b className="text-slate-700">berlaku khusus area Cimahi saja</b>.
+                          </p>
                         </label>
 
-                        <label className={`block p-2.5 md:p-3 border rounded-lg md:rounded-xl cursor-pointer ${courier === 'gosend' ? 'bg-emerald-50 border-emerald-500' : 'bg-white border-slate-200'}`}>
-                          <div className="flex items-center mb-1">
+                        {/* 3. PAXEL */}
+                        <label className={`block p-2.5 md:p-3 border rounded-lg md:rounded-xl cursor-pointer transition-all ${courier === 'paxel' ? 'bg-emerald-50 border-emerald-500 shadow-sm' : 'bg-white border-slate-200 hover:bg-slate-50'}`}>
+                          <div className="flex items-center flex-wrap mb-1.5 gap-y-1">
+                            <input type="radio" className="hidden" checked={courier === 'paxel'} onChange={() => setCourier('paxel')} />
+                            <span className={`w-3 h-3 md:w-4 md:h-4 rounded-full border-2 mr-2 flex items-center justify-center shrink-0 ${courier === 'paxel' ? 'border-emerald-500' : 'border-slate-300'}`}>
+                              {courier === 'paxel' && <span className="w-1.5 h-1.5 md:w-2 md:h-2 rounded-full bg-emerald-500"></span>}
+                            </span>
+                            <span className="font-bold text-[11px] md:text-sm text-slate-800 mr-2">Paxel (Luar Kota)</span>
+                            {/* BADGE HIGHLIGHT */}
+                            <span className="bg-purple-100 text-purple-700 border border-purple-200 px-1.5 md:px-2 py-0.5 rounded text-[8px] md:text-[9px] font-black uppercase tracking-wider">✈️ Luar Bandung Raya</span>
+                          </div>
+                          <p className="text-[11px] md:text-xs font-normal text-slate-600 pl-5 md:pl-6 leading-relaxed">
+                            Pengiriman dengan fasilitas pendingin <b className="text-slate-700">khusus untuk luar kota / luar pulau</b>. Ongkir fix diinfokan Admin via WhatsApp.
+                          </p>
+                        </label>
+
+                        {/* 4. GOSEND / GRAB */}
+                        <label className={`block p-2.5 md:p-3 border rounded-lg md:rounded-xl cursor-pointer transition-all ${courier === 'gosend' ? 'bg-emerald-50 border-emerald-500 shadow-sm' : 'bg-white border-slate-200 hover:bg-slate-50'}`}>
+                          <div className="flex items-center flex-wrap mb-1.5 gap-y-1">
                             <input type="radio" className="hidden" checked={courier === 'gosend'} onChange={() => setCourier('gosend')} />
-                            <span className={`w-3 h-3 md:w-4 md:h-4 rounded-full border-2 mr-2 flex items-center justify-center ${courier === 'gosend' ? 'border-emerald-500' : 'border-slate-300'}`}>
+                            <span className={`w-3 h-3 md:w-4 md:h-4 rounded-full border-2 mr-2 flex items-center justify-center shrink-0 ${courier === 'gosend' ? 'border-emerald-500' : 'border-slate-300'}`}>
                               {courier === 'gosend' && <span className="w-1.5 h-1.5 md:w-2 md:h-2 rounded-full bg-emerald-500"></span>}
                             </span>
-                            <span className="font-bold text-[11px] md:text-sm text-slate-800">Gosend, dll (Pesan Sendiri)</span>
+                            <span className="font-bold text-[11px] md:text-sm text-slate-800 mr-2">Gosend / Grab</span>
+                            {/* BADGE HIGHLIGHT */}
+                            <span className="bg-amber-100 text-amber-700 border border-amber-200 px-1.5 md:px-2 py-0.5 rounded text-[8px] md:text-[9px] font-black uppercase tracking-wider">📱 Pesan Sendiri</span>
                           </div>
-                          <p className="text-[10px] text-slate-500 pl-6 leading-relaxed">Konsumen memesan kurir ojol sendiri ke titik lokasi kami setelah pesanan kami siapkan.</p>
+                          <p className="text-[11px] md:text-xs font-normal text-slate-600 pl-5 md:pl-6 leading-relaxed">
+                            Konsumen <b className="text-slate-700">memesan kurir ojol sendiri</b> ke titik lokasi kami setelah pesanan kami konfirmasi siap diambil.
+                          </p>
                         </label>
 
                         {/* FORM ALAMAT */}
-                        {(courier === 'ahsan' || courier === 'umiwa') && (
+                        {(courier === 'ahsan' || courier === 'umiwa' || courier === 'paxel') && (
                           <div className="bg-slate-50 p-3 md:p-4 rounded-lg md:rounded-xl border border-slate-200 space-y-2.5 md:space-y-3 mt-2 md:mt-4">
                             
                             <p className="text-[9px] md:text-[10px] font-black text-slate-500 uppercase tracking-widest border-b border-slate-200 pb-1.5 md:pb-2">
@@ -1328,9 +1363,30 @@ export default function CustomerLandingPage() {
                    )}
                 </div>
 
-                <div className="flex justify-between items-center mb-4 md:mb-5">
-                  <span className="text-xs md:text-sm font-black text-slate-800 uppercase tracking-widest">Grand Total</span>
-                  <span className="text-2xl md:text-3xl font-black text-emerald-600">{formatIDR(grandTotal)}</span>
+                <div className="flex justify-between items-start mb-4 md:mb-5 border-t border-slate-100 pt-4">
+                  <span className="text-xs md:text-sm font-black text-slate-800 uppercase tracking-widest pt-1">Grand Total</span>
+                  <div className="text-right flex flex-col items-end">
+                     {/* Harga Utama tetap Emerald */}
+                     <span className="text-2xl md:text-3xl font-black text-emerald-600 block leading-none">{formatIDR(grandTotal)}</span>
+                     
+                     {/* === INFO PAXEL YANG DI-HIGHLIGHT TOTAL === */}
+                     {deliveryMode === 'delivery' && courier === 'paxel' && (
+                        <div className="mt-2.5 bg-rose-50 border border-rose-100 text-rose-700 px-3 py-2 rounded-xl shadow-inner animate-pulse flex items-center gap-2">
+                          {/* Icon Peringatan */}
+                          <Info className="w-4 h-4 md:w-5 md:h-5 shrink-0 text-rose-500" />
+                          
+                          <div className="text-left">
+                            <span className="text-[10px] md:text-[12px] font-black block leading-tight uppercase tracking-wider">
+                              + ONGKIR PAXEL VIA WA
+                            </span>
+                            <span className="text-[9px] md:text-[11px] font-medium block text-rose-600/90 leading-tight">
+                              Nanti ditotalin Admin di WhatsApp ya kak.
+                            </span>
+                          </div>
+                        </div>
+                     )}
+                     {/* ========================================= */}
+                  </div>
                 </div>
                 <button onClick={handleCheckoutWA} className="w-full bg-[#25D366] text-white font-black py-3.5 md:py-5 rounded-xl md:rounded-2xl flex justify-center items-center active:scale-95 shadow-md text-xs md:text-base">
                   <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="currentColor" stroke="none" className="w-4 h-4 md:w-5 md:h-5 mr-1.5 md:mr-2">
