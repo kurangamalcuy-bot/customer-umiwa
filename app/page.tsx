@@ -390,7 +390,6 @@ export default function CustomerLandingPage() {
         message += `\n*GRAND TOTAL: ${formatIDR(grandTotal)}*\n\n`;
     }
 
-    message += `\n*GRAND TOTAL: ${formatIDR(grandTotal)}*\n\n`;
     let paymentText = '';
     if (paymentMethod === 'qris') paymentText = 'QRIS';
     else if (paymentMethod === 'bsi') paymentText = 'Transfer BSI';
