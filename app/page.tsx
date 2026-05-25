@@ -110,7 +110,7 @@ export default function CustomerLandingPage() {
   const CATALOG = [
     { 
       name: "Pempek Isi 20", price: 35000, normalPrice: 45000, img: "/pempek-20.jpg", 
-      desc: "Cocok banget buat stok cemilan sekeluarga atau kumpul bareng teman. Makan rame-rame makin seru!",
+      desc: "Cocok banget buat stok cemilan sekeluarga. (Terdiri dari: 5 Adaan, 5 Kulit, 5 Lenjer, 5 Telor).",
       media: [
         { type: 'image', url: '/pempek-20.jpg' }, { type: 'image', url: '/pempek-20-2.jpg' },
         { type: 'video', embedCode: `<iframe width="560" height="315" src="https://www.youtube.com/embed/dtzh8Cd15Ao" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>` } 
@@ -118,7 +118,7 @@ export default function CustomerLandingPage() {
     },
     { 
       name: "Pempek Isi 15", price: 30000, normalPrice: 35000, img: "/pempek-15.jpg", 
-      desc: "Porsi nanggung yang pas banget buat nemenin kerja santai atau nonton drakor.",
+      desc: "Porsi nanggung yang pas buat nemenin kerja santai. (Terdiri dari: 4 Adaan, 4 Kulit, 4 Lenjer, 3 Telur).",
       media: [
         { type: 'image', url: '/pempek-15.jpg' }, { type: 'image', url: '/pempek-15-2.jpg' },
         { type: 'video', embedCode: `<iframe width="560" height="315" src="https://www.youtube.com/embed/K8wCt9dprfY" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>` }
@@ -126,7 +126,7 @@ export default function CustomerLandingPage() {
     },
     { 
       name: "Pempek Isi 10", price: 20000, normalPrice: 25000, img: "/pempek-10.jpg", 
-      desc: "Pilihan pas buat me-time atau ganjal perut saat malam hari.",
+      desc: "Pilihan pas buat me-time atau ganjal perut saat malam. (Terdiri dari: 2 Adaan, 3 Kulit, 3 Lenjer, 2 Telur).",
       media: [
         { type: 'image', url: '/pempek-10.jpg' }, { type: 'image', url: '/pempek-10-2.jpg' },
         { type: 'video', embedCode: `<iframe width="560" height="315" src="https://www.youtube.com/embed/C-MCL_YVA-0" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>` }
@@ -134,7 +134,7 @@ export default function CustomerLandingPage() {
     },
     { 
       name: "Pempek Besar isi 10", price: 35000, normalPrice: 45000, img: "/pempek-besar.jpg", 
-      desc: "Buat kamu yang suka ukuran jumbo dan puas di setiap gigitan. Super kenyang!",
+      desc: "Ukuran jumbo, puas di setiap gigitan! (Terdiri dari: 2 Adaan, 3 Kulit, 3 Lenjer, 2 Telur).",
       media: [
         { type: 'image', url: '/pempek-besar.jpg' }, { type: 'image', url: '/pempek-besar-2.jpg' },
         { type: 'video', embedCode: `<iframe width="560" height="315" src="https://www.youtube.com/embed/2eZ2gNoPS4o" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>` }
@@ -142,6 +142,7 @@ export default function CustomerLandingPage() {
     },
     { 
       name: "Pempek Kapal Selam isi Telur", price: 28000, normalPrice: 35000, img: "/kapal-selam.jpg", 
+      // Kapal selam tidak diubah sesuai instruksi Bos
       desc: "Spesial buat pecinta telur. Sajian utama yang bikin perut langsung full dan happy!",
       media: [
         { type: 'image', url: '/kapal-selam.jpg' }, { type: 'image', url: '/kapal-selam-2.jpg' },
@@ -150,7 +151,7 @@ export default function CustomerLandingPage() {
     },
     { 
       name: "Tekwan", price: 35000, normalPrice: 40000, img: "/tekwan.jpg", 
-      desc: "Penyelamat di saat hujan atau butuh yang hangat-hangat. Kuah kaldunya bikin rileks.",
+      desc: "Penyelamat di saat hujan atau butuh yang hangat. Kuah kaldunya bikin rileks! (Berat: 400 gr).",
       media: [
         { type: 'image', url: '/tekwan.jpg' }, { type: 'image', url: '/tekwan-2.jpg' },
         { type: 'video', embedCode: `<iframe width="560" height="315" src="https://www.youtube.com/embed/VBTC7sTMqbY" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>` }
@@ -158,7 +159,7 @@ export default function CustomerLandingPage() {
     },
     { 
       name: "Adaan+Kulit isi 12", price: 20000, normalPrice: 25000, img: "/adaan.jpg", 
-      desc: "Cemilan gurih favorit anak-anak sampai dewasa. Bikin mulut nggak mau berhenti ngunyah!",
+      desc: "Cemilan gurih favorit semua usia. Nggak mau berhenti ngunyah! (Terdiri dari: 6 Adaan, 6 Kulit).",
       media: [
         { type: 'image', url: '/adaan.jpg' }, { type: 'image', url: '/adaan-2.jpg' },
         { type: 'video', embedCode: `<iframe width="560" height="315" src="https://www.youtube.com/embed/MYLM0py1TFs" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>` }
