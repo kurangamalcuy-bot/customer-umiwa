@@ -29,6 +29,17 @@ export default function CustomerLandingPage() {
   const [addPacking, setAddPacking] = useState(false);
   const [paymentMethod, setPaymentMethod] = useState('qris'); // Pilihan: 'qris', 'bsi', 'cash'
   const [packingOption, setPackingOption] = useState('pouch'); // 'pouch' atau 'cooler'
+
+  // === AUTO RESET METODE PEMBAYARAN ===
+  // Jika pilih dikirim pakai Ahsan, Paxel, atau Gosend tapi pembayarannya Cash, paksa balik ke QRIS!
+  useEffect(() => {
+    if (deliveryMode === 'delivery' && (courier === 'ahsan' || courier === 'paxel' || courier === 'gosend')) {
+      if (paymentMethod === 'cash') {
+        setPaymentMethod('qris');
+      }
+    }
+  }, [deliveryMode, courier, paymentMethod]);
+  // =====================================
   
   // State Alamat Lengkap
   const [address, setAddress] = useState({
@@ -38,6 +49,11 @@ export default function CustomerLandingPage() {
     kota: '',
     provinsi: ''
   });
+
+  // === SAKLAR RAHASIA ADMIN ===
+  // Ganti kata "true" menjadi "false" untuk MEMATIKAN / MENYEMBUNYIKAN Kurir Umiwa
+  // Ganti jadi "true" lagi kalau mau MENGAKTIFKAN kembali.
+  const IS_KURIR_UMIWA_AKTIF = true;
   
   // === TAMBAHKAN BARIS INI UNTUK SENSOR SWIPE ===
   const touchStartY = React.useRef(0);
@@ -302,7 +318,6 @@ export default function CustomerLandingPage() {
   const formatIDR = (num: number) => new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR', minimumFractionDigits: 0 }).format(num || 0);
 
   // Hitungan Tambahan (Pengiriman & Packing)
-  // Kembalikan ke kode asli Bos yang bersih dari message +=
   let shippingFee = 0;
   if (deliveryMode === 'delivery') {
       if (courier === 'ahsan') shippingFee = 12000;
@@ -312,7 +327,11 @@ export default function CustomerLandingPage() {
   }
 
   let packingFee = 0;
-  if (addPacking) {
+  if (deliveryMode === 'delivery' && courier === 'paxel') {
+      // LOGIKA BARU: Otomatis hitung packing Paxel berdasarkan jumlah pack
+      packingFee = totalItems <= 3 ? 3000 : 5000;
+  } else if (addPacking) {
+      // Packing standar untuk kurir selain Paxel
       packingFee = packingOption === 'pouch' ? 2500 : 3000;
   }
   const grandTotal = totalCart + shippingFee + packingFee;
@@ -344,7 +363,9 @@ export default function CustomerLandingPage() {
     }
 
     let packingText = '❌ Tidak';
-    if (addPacking) {
+    if (deliveryMode === 'delivery' && courier === 'paxel') {
+        packingText = totalItems <= 3 ? '📦 Packing Khusus Paxel (1-3 Pack) (+Rp3.000)' : '📦 Packing Khusus Paxel (>3 Pack) (+Rp5.000)';
+    } else if (addPacking) {
         packingText = packingOption === 'pouch' ? '📦 Thermal Pouch (+Rp2.500)' : '🛍️ Thermal Cooler Bag (+Rp3.000)';
     }
     message += `Tambahan Packing: ${packingText}\n\n`;
@@ -354,9 +375,12 @@ export default function CustomerLandingPage() {
       message += `▪️ ${item.qty}x ${item.name} (${formatIDR(item.price * item.qty)})\n`;
     });
 
-    message += `\nSubtotal: ${formatIDR(totalCart)}\n`;
+   message += `\nSubtotal: ${formatIDR(totalCart)}\n`;
     if (deliveryMode === 'delivery' && courier !== 'paxel') message += `Ongkir: ${formatIDR(shippingFee)}\n`;
-    if (addPacking) message += `Packing: ${formatIDR(packingFee)}\n`;
+    // Ubah baris addPacking agar packing Paxel juga ikut tercetak di WA
+    if (addPacking || (deliveryMode === 'delivery' && courier === 'paxel')) {
+        message += `Packing: ${formatIDR(packingFee)}\n`;
+    }
 
     // Ubah bagian ini agar ada teks khusus Paxel
     if (deliveryMode === 'delivery' && courier === 'paxel') {
@@ -1115,21 +1139,23 @@ export default function CustomerLandingPage() {
                           </p>
                         </label>
 
-                        {/* 2. KURIR UMIWA */}
-                        <label className={`block p-2.5 md:p-3 border rounded-lg md:rounded-xl cursor-pointer transition-all ${courier === 'umiwa' ? 'bg-emerald-50 border-emerald-500 shadow-sm' : 'bg-white border-slate-200 hover:bg-slate-50'}`}>
-                          <div className="flex items-center flex-wrap mb-1.5 gap-y-1">
-                            <input type="radio" className="hidden" checked={courier === 'umiwa'} onChange={() => setCourier('umiwa')} />
-                            <span className={`w-3 h-3 md:w-4 md:h-4 rounded-full border-2 mr-2 flex items-center justify-center shrink-0 ${courier === 'umiwa' ? 'border-emerald-500' : 'border-slate-300'}`}>
-                              {courier === 'umiwa' && <span className="w-1.5 h-1.5 md:w-2 md:h-2 rounded-full bg-emerald-500"></span>}
-                            </span>
-                            <span className="font-bold text-[11px] md:text-sm text-slate-800 mr-2">Kurir Umiwa (Rp 9rb)</span>
-                            {/* BADGE HIGHLIGHT */}
-                            <span className="bg-emerald-100 text-emerald-700 border border-emerald-200 px-1.5 md:px-2 py-0.5 rounded text-[8px] md:text-[9px] font-black uppercase tracking-wider">🛵 Khusus Cimahi</span>
-                          </div>
-                          <p className="text-[11px] md:text-xs font-normal text-slate-600 pl-5 md:pl-6 leading-relaxed">
-                            Pesanan diantar langsung ke tempat tujuan oleh kurir dari Pempek Umiwa, <b className="text-slate-700">berlaku khusus area Cimahi saja</b>.
-                          </p>
-                        </label>
+                        {/* 2. KURIR UMIWA (DILENGKAPI SAKLAR) */}
+                        {IS_KURIR_UMIWA_AKTIF && (
+                          <label className={`block p-2.5 md:p-3 border rounded-lg md:rounded-xl cursor-pointer transition-all ${courier === 'umiwa' ? 'bg-emerald-50 border-emerald-500 shadow-sm' : 'bg-white border-slate-200 hover:bg-slate-50'}`}>
+                            <div className="flex items-center flex-wrap mb-1.5 gap-y-1">
+                              <input type="radio" className="hidden" checked={courier === 'umiwa'} onChange={() => setCourier('umiwa')} />
+                              <span className={`w-3 h-3 md:w-4 md:h-4 rounded-full border-2 mr-2 flex items-center justify-center shrink-0 ${courier === 'umiwa' ? 'border-emerald-500' : 'border-slate-300'}`}>
+                                {courier === 'umiwa' && <span className="w-1.5 h-1.5 md:w-2 md:h-2 rounded-full bg-emerald-500"></span>}
+                              </span>
+                              <span className="font-bold text-[11px] md:text-sm text-slate-800 mr-2">Kurir Umiwa (Rp 9rb)</span>
+                              {/* BADGE HIGHLIGHT */}
+                              <span className="bg-emerald-100 text-emerald-700 border border-emerald-200 px-1.5 md:px-2 py-0.5 rounded text-[8px] md:text-[9px] font-black uppercase tracking-wider">🛵 Khusus Cimahi</span>
+                            </div>
+                            <p className="text-[11px] md:text-xs font-normal text-slate-600 pl-5 md:pl-6 leading-relaxed">
+                              Pesanan diantar langsung ke tempat tujuan oleh kurir dari Pempek Umiwa, <b className="text-slate-700">berlaku khusus area Cimahi saja</b>.
+                            </p>
+                          </label>
+                        )}
 
                         {/* 3. PAXEL */}
                         <label className={`block p-2.5 md:p-3 border rounded-lg md:rounded-xl cursor-pointer transition-all ${courier === 'paxel' ? 'bg-emerald-50 border-emerald-500 shadow-sm' : 'bg-white border-slate-200 hover:bg-slate-50'}`}>
@@ -1154,7 +1180,7 @@ export default function CustomerLandingPage() {
                             <span className={`w-3 h-3 md:w-4 md:h-4 rounded-full border-2 mr-2 flex items-center justify-center shrink-0 ${courier === 'gosend' ? 'border-emerald-500' : 'border-slate-300'}`}>
                               {courier === 'gosend' && <span className="w-1.5 h-1.5 md:w-2 md:h-2 rounded-full bg-emerald-500"></span>}
                             </span>
-                            <span className="font-bold text-[11px] md:text-sm text-slate-800 mr-2">Gosend / Grab</span>
+                            <span className="font-bold text-[11px] md:text-sm text-slate-800 mr-2">Gosend/Shopee Instant</span>
                             {/* BADGE HIGHLIGHT */}
                             <span className="bg-amber-100 text-amber-700 border border-amber-200 px-1.5 md:px-2 py-0.5 rounded text-[8px] md:text-[9px] font-black uppercase tracking-wider">📱 Pesan Sendiri</span>
                           </div>
@@ -1268,86 +1294,90 @@ export default function CustomerLandingPage() {
                         Transfer BSI
                       </label>
 
-                      {/* CASH */}
-                      <label className={`flex-1 p-2 md:p-3 border rounded-lg md:rounded-xl text-[10px] md:text-xs font-bold text-center cursor-pointer transition-colors flex flex-col items-center justify-center ${paymentMethod === 'cash' ? 'bg-emerald-50 border-emerald-500 text-emerald-700 shadow-sm' : 'bg-white text-slate-500 hover:bg-slate-50'}`}>
-                        
-                        <input
-                          type="radio"
-                          className="hidden"
-                          checked={paymentMethod === 'cash'}
-                          onChange={() => setPaymentMethod('cash')}
-                        />
-
-                        <div className="h-7 md:h-8 flex items-center justify-center mb-1">
-                          <img
-                            src="/logo-duit.png"
-                            alt="Duit"
-                            className="max-h-full max-w-[52px] object-contain"
+                      {/* CASH (HANYA MUNCUL JIKA AMBIL SENDIRI ATAU PAKAI KURIR UMIWA) */}
+                      {(deliveryMode === 'pickup' || (deliveryMode === 'delivery' && courier === 'umiwa')) && (
+                        <label className={`flex-1 p-2 md:p-3 border rounded-lg md:rounded-xl text-[10px] md:text-xs font-bold text-center cursor-pointer transition-colors flex flex-col items-center justify-center ${paymentMethod === 'cash' ? 'bg-emerald-50 border-emerald-500 text-emerald-700 shadow-sm' : 'bg-white text-slate-500 hover:bg-slate-50'}`}>
+                          
+                          <input
+                            type="radio"
+                            className="hidden"
+                            checked={paymentMethod === 'cash'}
+                            onChange={() => setPaymentMethod('cash')}
                           />
-                        </div>
 
-                        Cash / Tunai
-                      </label>
+                          <div className="h-7 md:h-8 flex items-center justify-center mb-1">
+                            <img
+                              src="/logo-duit.png"
+                              alt="Duit"
+                              className="max-h-full max-w-[52px] object-contain"
+                            />
+                          </div>
+
+                          Cash / Tunai
+                        </label>
+                      )}
 
                     </div>
                   </div>
 
-                  {/* TAMBAHAN PACKING */}
-                  <div className="pt-2">
-                    <label className="text-[10px] md:text-xs font-black text-slate-500 uppercase block mb-1">Gunakan Thermal Packing?</label>
-                    
-                    <p className="text-[10px] md:text-xs text-slate-400 mb-2.5 leading-relaxed">
-                      Berfungsi menjaga pempek frozen tetap dingin, beku, dan fresh selama pengiriman.
-                    </p>
-                    
-                    <div className="flex gap-2 md:gap-3">
-                      <label className={`flex-1 p-2 md:p-3 border rounded-lg md:rounded-xl text-[10px] md:text-xs font-bold text-center cursor-pointer transition-colors ${addPacking === true ? 'bg-emerald-50 border-emerald-500 text-emerald-700' : 'bg-white text-slate-500 hover:bg-slate-50'}`}>
-                        <input 
-                          type="radio" 
-                          className="hidden" 
-                          checked={addPacking === true} 
-                          onChange={() => {
-                            setAddPacking(true);
-                            // Delay sedikit agar menu dirender dulu, baru di-scroll
-                            setTimeout(() => {
-                              document.getElementById('packing-section')?.scrollIntoView({ behavior: 'smooth', block: 'center' });
-                            }, 150);
-                          }} 
-                        />
-                        📦 Ya
-                      </label>
-
-                      <label className={`flex-1 p-2 md:p-3 border rounded-lg md:rounded-xl text-[10px] md:text-xs font-bold text-center cursor-pointer transition-colors ${addPacking === false ? 'bg-rose-50 border-rose-500 text-rose-700' : 'bg-white text-slate-500 hover:bg-slate-50'}`}>
-                        <input type="radio" className="hidden" checked={addPacking === false} onChange={() => setAddPacking(false)} />
-                        ❌ Tidak
-                      </label>
-                    </div>
-
-                    {/* SUB-MENU PILIHAN PACKING (MUNCUL JIKA KLIK "YA") */}
-                    {addPacking && (
-                      <div id="packing-section" className="mt-3 grid grid-cols-2 gap-2 md:gap-3 animate-in slide-in-from-top-2">
-                        
-                        {/* Pilihan 1: POUCH */}
-                        <label className={`border rounded-lg md:rounded-xl p-3 cursor-pointer flex flex-col items-center text-center transition-all ${packingOption === 'pouch' ? 'border-emerald-500 bg-emerald-50 shadow-sm' : 'border-slate-200 bg-white hover:bg-slate-50'}`}>
-                          <input type="radio" className="hidden" checked={packingOption === 'pouch'} onChange={() => setPackingOption('pouch')} />
-                          <img src="/foto-pouch.jpg" alt="Thermal Pouch" className="w-16 h-16 md:w-20 md:h-20 object-cover rounded-lg mb-2 bg-slate-100" onError={(e:any) => e.target.src = 'https://via.placeholder.com/80?text=Foto+Pouch'} />
-                          <span className="text-[10px] md:text-xs font-bold text-slate-800 leading-tight">Thermal Pouch</span>
-                          <span className="text-[9px] md:text-[10px] text-slate-400 mt-0.5">Maksimal muat untuk 2 pack</span>
-                          <span className="text-[9px] md:text-[10px] font-black text-emerald-600 mt-1">+ Rp 2.500</span>
-                        </label>
-                        
-                        {/* Pilihan 2: COOLER BAG */}
-                        <label className={`border rounded-lg md:rounded-xl p-3 cursor-pointer flex flex-col items-center text-center transition-all ${packingOption === 'cooler' ? 'border-emerald-500 bg-emerald-50 shadow-sm' : 'border-slate-200 bg-white hover:bg-slate-50'}`}>
-                          <input type="radio" className="hidden" checked={packingOption === 'cooler'} onChange={() => setPackingOption('cooler')} />
-                          <img src="/foto-cooler.jpg" alt="Thermal Cooler Bag" className="w-16 h-16 md:w-20 md:h-20 object-cover rounded-lg mb-2 bg-slate-100" onError={(e:any) => e.target.src = 'https://via.placeholder.com/80?text=Foto+Cooler'} />
-                          <span className="text-[10px] md:text-xs font-bold text-slate-800 leading-tight">Thermal Cooler Bag</span>
-                          <span className="text-[9px] md:text-[10px] text-slate-400 mt-0.5">Maksimal muat untuk 5 pack</span>
-                          <span className="text-[9px] md:text-[10px] font-black text-emerald-600 mt-1">+ Rp 3.000</span>
+                  {/* TAMBAHAN PACKING (DISEMBUNYIKAN JIKA PILIH PAXEL) */}
+                  {!(deliveryMode === 'delivery' && courier === 'paxel') && (
+                    <div className="pt-2">
+                      <label className="text-[10px] md:text-xs font-black text-slate-500 uppercase block mb-1">Gunakan Thermal Packing?</label>
+                      
+                      {/* ... (Seluruh isi tombol thermal pouch & cooler bag Bos biarkan tetap di sini) ... */}
+                      <p className="text-[10px] md:text-xs text-slate-400 mb-2.5 leading-relaxed">
+                        Berfungsi menjaga pempek frozen tetap dingin, beku, dan fresh selama pengiriman.
+                      </p>
+                      
+                      <div className="flex gap-2 md:gap-3">
+                        <label className={`flex-1 p-2 md:p-3 border rounded-lg md:rounded-xl text-[10px] md:text-xs font-bold text-center cursor-pointer transition-colors ${addPacking === true ? 'bg-emerald-50 border-emerald-500 text-emerald-700' : 'bg-white text-slate-500 hover:bg-slate-50'}`}>
+                          <input 
+                            type="radio" 
+                            className="hidden" 
+                            checked={addPacking === true} 
+                            onChange={() => {
+                              setAddPacking(true);
+                              setTimeout(() => {
+                                document.getElementById('packing-section')?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                              }, 150);
+                            }} 
+                          />
+                          📦 Ya
                         </label>
 
+                        <label className={`flex-1 p-2 md:p-3 border rounded-lg md:rounded-xl text-[10px] md:text-xs font-bold text-center cursor-pointer transition-colors ${addPacking === false ? 'bg-rose-50 border-rose-500 text-rose-700' : 'bg-white text-slate-500 hover:bg-slate-50'}`}>
+                          <input type="radio" className="hidden" checked={addPacking === false} onChange={() => setAddPacking(false)} />
+                          ❌ Tidak
+                        </label>
                       </div>
-                    )}
-                  </div>
+
+                      {/* SUB-MENU PILIHAN PACKING */}
+                      {addPacking && (
+                        <div id="packing-section" className="mt-3 grid grid-cols-2 gap-2 md:gap-3 animate-in slide-in-from-top-2">
+                          
+                          {/* Pilihan 1: POUCH */}
+                          <label className={`border rounded-lg md:rounded-xl p-3 cursor-pointer flex flex-col items-center text-center transition-all ${packingOption === 'pouch' ? 'border-emerald-500 bg-emerald-50 shadow-sm' : 'border-slate-200 bg-white hover:bg-slate-50'}`}>
+                            <input type="radio" className="hidden" checked={packingOption === 'pouch'} onChange={() => setPackingOption('pouch')} />
+                            <img src="/foto-pouch.jpg" alt="Thermal Pouch" className="w-16 h-16 md:w-20 md:h-20 object-cover rounded-lg mb-2 bg-slate-100" onError={(e:any) => e.target.src = 'https://via.placeholder.com/80?text=Foto+Pouch'} />
+                            <span className="text-[10px] md:text-xs font-bold text-slate-800 leading-tight">Thermal Pouch</span>
+                            <span className="text-[9px] md:text-[10px] text-slate-400 mt-0.5">Maksimal muat untuk 2 pack</span>
+                            <span className="text-[9px] md:text-[10px] font-black text-emerald-600 mt-1">+ Rp 2.500</span>
+                          </label>
+                          
+                          {/* Pilihan 2: COOLER BAG */}
+                          <label className={`border rounded-lg md:rounded-xl p-3 cursor-pointer flex flex-col items-center text-center transition-all ${packingOption === 'cooler' ? 'border-emerald-500 bg-emerald-50 shadow-sm' : 'border-slate-200 bg-white hover:bg-slate-50'}`}>
+                            <input type="radio" className="hidden" checked={packingOption === 'cooler'} onChange={() => setPackingOption('cooler')} />
+                            <img src="/foto-cooler.jpg" alt="Thermal Cooler Bag" className="w-16 h-16 md:w-20 md:h-20 object-cover rounded-lg mb-2 bg-slate-100" onError={(e:any) => e.target.src = 'https://via.placeholder.com/80?text=Foto+Cooler'} />
+                            <span className="text-[10px] md:text-xs font-bold text-slate-800 leading-tight">Thermal Cooler Bag</span>
+                            <span className="text-[9px] md:text-[10px] text-slate-400 mt-0.5">Maksimal muat untuk 5 pack</span>
+                            <span className="text-[9px] md:text-[10px] font-black text-emerald-600 mt-1">+ Rp 3.000</span>
+                          </label>
+
+                        </div>
+                      )}
+                    </div>
+                  )}
 
                 </div>
               )}
@@ -1368,9 +1398,13 @@ export default function CustomerLandingPage() {
                        <span className="text-[10px] md:text-xs font-bold text-slate-800">{formatIDR(shippingFee)}</span>
                      </div>
                    )}
-                   {addPacking && (
+                   
+                   {/* UBAH BAGIAN INI AGAR PACKING PAXEL IKUT MUNCUL */}
+                   {(addPacking || (deliveryMode === 'delivery' && courier === 'paxel')) && (
                      <div className="flex justify-between items-center">
-                       <span className="text-[10px] md:text-xs text-slate-500 font-medium">Packing</span>
+                       <span className="text-[10px] md:text-xs text-slate-500 font-medium">
+                         {deliveryMode === 'delivery' && courier === 'paxel' ? 'Packing Khusus (Paxel)' : 'Packing'}
+                       </span>
                        <span className="text-[10px] md:text-xs font-bold text-slate-800">{formatIDR(packingFee)}</span>
                      </div>
                    )}
