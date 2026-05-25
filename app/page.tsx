@@ -167,14 +167,14 @@ export default function CustomerLandingPage() {
     }
   ];
 
-  // 2. KAMUS PAKET BUNDLING
+  // 2. KAMUS PAKET BUNDLING (DENGAN INFO AUTO-SWAP)
   const BUNDLES = [
     { 
       name: "Paket Cicip (2 packs)", 
       price: 44000, normalPrice: 48000, 
       img: "/paket-cicip.jpg", 
       desc: [
-        "1x Pempek isi 10",
+        "1x Pempek Isi 10 (Bisa ditukar Adaan+Kulit)",
         "1x Pempek Kapal Selam isi Telur"
       ],
       media: [
@@ -187,9 +187,9 @@ export default function CustomerLandingPage() {
       price: 80000, normalPrice: 90000, 
       img: "/paket-keluarga.jpg", 
       desc: [
-        "1x Pempek isi 20",
-        "1x Adaan+Kulit isi 12",
-        "1x Tekwan"
+        "1x Pempek Isi 20 (Bisa ditukar 2x Pempek isi 10)",
+        "1x Adaan+Kulit isi 12 (Bisa ditukar Pempek isi 10)",
+        "1x Tekwan (Bisa ditukar Pempek Besar isi 10)"
       ],
       media: [
         { type: 'image', url: '/paket-keluarga.jpg' },
@@ -201,10 +201,10 @@ export default function CustomerLandingPage() {
       price: 139000, normalPrice: 153000, 
       img: "/paket-istimewa.jpg", 
       desc: [
-        "1x Pempek isi 20",
-        "1x Pempek Besar isi 10",
-        "1x Tekwan",
-        "1x Adaan+Kulit isi 12",
+        "1x Pempek Isi 20 (Bisa ditukar 2x Pempek isi 10)",
+        "1x Pempek Besar isi 10 (Bisa ditukar Tekwan)",
+        "1x Tekwan (Bisa ditukar Pempek Besar isi 10)",
+        "1x Adaan+Kulit isi 12 (Bisa ditukar Pempek isi 10)",
         "1x Pempek Kapal Selam isi Telur"
       ],
       media: [
@@ -262,23 +262,36 @@ export default function CustomerLandingPage() {
       });
       setProducts(activeProducts);
 
-      // 2. HITUNG OTOMATIS STOK BUNDLING (Berdasarkan komponen tersedikit)
-      const BUNDLE_COMPONENTS: any = {
-        "Paket Cicip (2 packs)": ["Pempek Isi 10", "Pempek Kapal Selam isi Telur"],
-        "Paket Keluarga (3 packs)": ["Pempek Isi 20", "Adaan+Kulit isi 12", "Tekwan"],
-        "Paket Istimewa (5 packs)": ["Pempek Isi 20", "Pempek Besar isi 10", "Tekwan", "Adaan+Kulit isi 12", "Pempek Kapal Selam isi Telur"]
-      };
-
+      // 2. HITUNG OTOMATIS STOK BUNDLING (SMART FALLBACK / ALTERNATIF)
       const activeBundles = BUNDLES.map(b => {
-        const components = BUNDLE_COMPONENTS[b.name] || [];
-        let minStock = Infinity;
+        let effStock = 0;
         
-        components.forEach((compName: string) => {
-          const compStock = stockMap.get(compName.toLowerCase()) || 0;
-          if (compStock < minStock) minStock = compStock; // Ambil nilai stok terkecil
-        });
-        
-        return { ...b, stock: minStock === Infinity ? 0 : minStock };
+        // Tarik angka stok asli dari freezer (sudah dibersihkan dari " | Paket Cicip")
+        const stIsi10 = stockMap.get("pempek isi 10") || 0;
+        const stIsi20 = stockMap.get("pempek isi 20") || 0;
+        const stBesar = stockMap.get("pempek besar isi 10") || 0;
+        const stTekwan = stockMap.get("tekwan") || 0;
+        const stAdaan = stockMap.get("adaan+kulit isi 12") || 0;
+        const stSelam = stockMap.get("pempek kapal selam isi telur") || 0;
+
+        // Logika Substitusi / Pertukaran Stok
+        if (b.name === "Paket Cicip (2 packs)") {
+           const effIsi10 = stIsi10 + stAdaan; // Bisa ditukar Adaan
+           effStock = Math.min(effIsi10, stSelam);
+        } else if (b.name === "Paket Keluarga (3 packs)") {
+           const effIsi20 = stIsi20 + Math.floor(stIsi10 / 2); // Isi 20 bisa diganti 2x Isi 10
+           const effAdaan = stAdaan + stIsi10; // Adaan bisa diganti Isi 10
+           const effTekwan = stTekwan + stBesar; // Tekwan bisa diganti Besar 10
+           effStock = Math.min(effIsi20, effAdaan, effTekwan);
+        } else if (b.name === "Paket Istimewa (5 packs)") {
+           const effIsi20 = stIsi20 + Math.floor(stIsi10 / 2);
+           const effAdaan = stAdaan + stIsi10;
+           // Khusus paket ini, butuh 1 Tekwan & 1 Besar. Berarti butuh total 2 stok gabungan dari mereka
+           const effTekwanBesar = Math.floor((stTekwan + stBesar) / 2); 
+           effStock = Math.min(effIsi20, effAdaan, effTekwanBesar, stSelam);
+        }
+
+        return { ...b, stock: effStock };
       });
       setBundlesData(activeBundles);
     }
@@ -562,14 +575,39 @@ export default function CustomerLandingPage() {
                 <div className="p-4 md:p-6 flex flex-col flex-1">
                   <h3 className="font-black text-slate-800 text-lg md:text-xl mb-2 md:mb-3 leading-tight">{b.name}</h3>
                   
-                  <ul className="text-xs md:text-sm text-slate-500 font-medium mb-4 md:mb-6 flex-1 space-y-1 md:space-y-1.5">
-                    {b.desc.map((item: string, idx: number) => (
-                      <li key={idx} className="flex items-start">
-                        <span className="mr-1.5 md:mr-2 text-rose-500 font-black">•</span> 
-                        <span className="leading-tight">{item}</span>
-                      </li>
-                    ))}
+                  {/* DAFTAR ISI PAKET (DESAIN UI BARU) */}
+                  <ul className="text-xs md:text-sm text-slate-500 font-medium mb-4 flex-1 space-y-2.5">
+                    {b.desc.map((item: string, idx: number) => {
+                      // Trik memisahkan teks utama dan teks di dalam kurung
+                      const parts = item.split(' (Bisa ditukar ');
+                      const mainText = parts[0];
+                      const swapText = parts[1] ? parts[1].replace(')', '') : null;
+
+                      return (
+                        <li key={idx} className="flex items-start">
+                          <span className="mr-2.5 mt-0.5 flex items-center justify-center bg-rose-100 text-rose-500 w-4 h-4 rounded-full text-[9px] shrink-0 font-black shadow-sm">✓</span> 
+                          <div className="flex flex-col">
+                            <span className="font-bold text-slate-700 leading-tight">{mainText}</span>
+                            
+                            {/* Munculkan Badge/Label Tukar jika ada */}
+                            {swapText && (
+                              <span className="inline-flex items-center mt-1.5 text-[9px] md:text-[10px] font-black text-amber-600 bg-amber-50 border border-amber-200 px-2 py-0.5 rounded-md w-max shadow-sm">
+                                🔁 Bisa Tukar: {swapText}
+                              </span>
+                            )}
+                          </div>
+                        </li>
+                      );
+                    })}
                   </ul>
+
+                  {/* Info Tambahan (Dibuat Lebih Minimalis & Elegan) */}
+                  <div className="bg-slate-50 border border-slate-200 p-2.5 md:p-3 rounded-xl mb-4 md:mb-6 flex items-center">
+                      <span className="text-amber-500 mr-2 shrink-0 animate-pulse">💡</span>
+                      <p className="text-[9px] md:text-[10px] text-slate-500 font-medium leading-tight">
+                        Bebas <b className="text-slate-700">request tukar varian</b> (sesuai label alternatif di atas) saat lanjut checkout ke WhatsApp!
+                      </p>
+                  </div>
                   
                   <div className="bg-rose-50/50 p-3 md:p-4 rounded-xl md:rounded-2xl border border-rose-100 mb-4 md:mb-6 relative overflow-hidden">
                     <div className="absolute -right-4 -top-4 opacity-10"><Flame className="w-16 h-16 md:w-20 md:h-20 text-rose-500"/></div>
