@@ -237,13 +237,19 @@ export default function CustomerLandingPage() {
       const stockMap = new Map();
       
       batches.forEach(b => {
-        const key = b.product_name?.trim().toLowerCase() || '';
+        // PERBAIKAN: Potong teks jika ada nama paket
+        const rawName = (b.product_name || '').split(' | ')[0];
+        const key = rawName.trim().toLowerCase();
+        
         if (!stockMap.has(key)) stockMap.set(key, 0);
         stockMap.set(key, stockMap.get(key) + Number(b.total_qty || 0));
       });
 
       trx.forEach(t => {
-        const key = t.product_name?.trim().toLowerCase() || '';
+        // PERBAIKAN: Potong teks jika ada nama paket
+        const rawName = (t.product_name || '').split(' | ')[0];
+        const key = rawName.trim().toLowerCase();
+        
         if (stockMap.has(key)) {
           stockMap.set(key, stockMap.get(key) - Number(t.qty || 0));
         }
