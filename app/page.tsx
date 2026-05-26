@@ -1173,7 +1173,7 @@ export default function CustomerLandingPage() {
                             <span className={`w-3 h-3 md:w-4 md:h-4 rounded-full border-2 mr-2 flex items-center justify-center shrink-0 ${courier === 'ahsan' ? 'border-emerald-500' : 'border-slate-300'}`}>
                               {courier === 'ahsan' && <span className="w-1.5 h-1.5 md:w-2 md:h-2 rounded-full bg-emerald-500"></span>}
                             </span>
-                            <span className="font-bold text-[11px] md:text-sm text-slate-800 mr-2">Ahsan Xpress (Rp 12rb)</span>
+                            <span className="font-bold text-[11px] md:text-sm text-slate-800 mr-2">Ahsan Xpress - Sameday (Rp 12rb)</span>
                             {/* BADGE HIGHLIGHT */}
                             <span className="bg-sky-100 text-sky-700 border border-sky-200 px-1.5 md:px-2 py-0.5 rounded text-[8px] md:text-[9px] font-black uppercase tracking-wider">📍 Se-Bandung Raya</span>
                           </div>
@@ -1191,7 +1191,7 @@ export default function CustomerLandingPage() {
                               <span className={`w-3 h-3 md:w-4 md:h-4 rounded-full border-2 mr-2 flex items-center justify-center shrink-0 ${courier === 'umiwa' ? 'border-emerald-500' : 'border-slate-300'}`}>
                                 {courier === 'umiwa' && <span className="w-1.5 h-1.5 md:w-2 md:h-2 rounded-full bg-emerald-500"></span>}
                               </span>
-                              <span className="font-bold text-[11px] md:text-sm text-slate-800 mr-2">Kurir Umiwa (Rp 9rb)</span>
+                              <span className="font-bold text-[11px] md:text-sm text-slate-800 mr-2">Kurir Umiwa - Instant (Rp 9rb)</span>
                               {/* BADGE HIGHLIGHT */}
                               <span className="bg-emerald-100 text-emerald-700 border border-emerald-200 px-1.5 md:px-2 py-0.5 rounded text-[8px] md:text-[9px] font-black uppercase tracking-wider">🛵 Khusus Cimahi</span>
                             </div>
