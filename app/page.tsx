@@ -164,6 +164,17 @@ export default function CustomerLandingPage() {
         { type: 'image', url: '/adaan.jpg' }, { type: 'image', url: '/adaan-2.jpg' },
         { type: 'video', embedCode: `<iframe width="560" height="315" src="https://www.youtube.com/embed/MYLM0py1TFs" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>` }
       ]
+    },
+    { 
+      name: "Cuko 100 ml", // ⚠️ PENTING: Nama ini HARUS SAMA PERSIS ejaannya dengan yang Bos input di Supabase/Halaman Stok Admin.
+      price: 12000,        // Harga Jual (Harga yang harus dibayar konsumen)
+      normalPrice: 15000,  // Harga Coret (Kosongkan atau hapus baris ini jika tidak mau ada efek diskon)
+      img: "/cuko-100ml.jpg", // Pastikan Bos memasukkan foto cuko ke dalam folder "public" dengan nama ini
+      desc: "Tambahan cuko kental, pedas, asam, manis khas Palembang asli. Bikin makan pempek makin banjir dan mantap!",
+      media: [
+        { type: 'image', url: '/cuko-100ml.jpg' }
+        // Kalau Bos punya video youtube untuk Cuko, bisa tambahkan di baris bawah ini seperti produk lain
+      ]
     }
   ];
 
