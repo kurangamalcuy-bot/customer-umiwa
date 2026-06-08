@@ -53,7 +53,7 @@ export default function CustomerLandingPage() {
   // === SAKLAR RAHASIA ADMIN ===
   // Ganti kata "true" menjadi "false" untuk MEMATIKAN / MENYEMBUNYIKAN Kurir Umiwa
   // Ganti jadi "true" lagi kalau mau MENGAKTIFKAN kembali.
-  const IS_KURIR_UMIWA_AKTIF = true;
+  const IS_KURIR_UMIWA_AKTIF = false;
   
   // === TAMBAHKAN BARIS INI UNTUK SENSOR SWIPE ===
   const touchStartY = React.useRef(0);
@@ -198,7 +198,7 @@ export default function CustomerLandingPage() {
       price: 80000, normalPrice: 90000, 
       img: "/paket-keluarga.jpg", 
       desc: [
-        "1x Pempek Isi 20 (Bisa ditukar 2x Pempek isi 10)",
+        "1x Pempek Isi 20",
         "1x Adaan+Kulit isi 12 (Bisa ditukar Pempek isi 10)",
         "1x Tekwan (Bisa ditukar Pempek Besar isi 10)"
       ],
@@ -212,7 +212,7 @@ export default function CustomerLandingPage() {
       price: 139000, normalPrice: 153000, 
       img: "/paket-istimewa.jpg", 
       desc: [
-        "1x Pempek Isi 20 (Bisa ditukar 2x Pempek isi 10)",
+        "1x Pempek Isi 20",
         "1x Pempek Besar isi 10 (Bisa ditukar Tekwan)",
         "1x Tekwan (Bisa ditukar Pempek Besar isi 10)",
         "1x Adaan+Kulit isi 12 (Bisa ditukar Pempek isi 10)",
