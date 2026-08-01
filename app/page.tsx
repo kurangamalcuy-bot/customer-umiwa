@@ -49,6 +49,7 @@ export default function CustomerLandingPage() {
     kota: '',
     provinsi: ''
   });
+  const [referralCode, setReferralCode] = useState('');
 
   // === SAKLAR RAHASIA ADMIN ===
   // Ganti kata "true" menjadi "false" untuk MEMATIKAN / MENYEMBUNYIKAN Kurir Umiwa
@@ -109,7 +110,7 @@ export default function CustomerLandingPage() {
   // 1. KAMUS KATALOG PRODUK SATUAN
   const CATALOG = [
     { 
-      name: "Pempek Isi 20", price: 35000, normalPrice: 45000, img: "/pempek-20.jpg", 
+      name: "Pempek Isi 20", price: 40000, normalPrice: 46000, img: "/pempek-20.jpg", 
       desc: "Cocok banget buat stok cemilan sekeluarga. (Terdiri dari: 5 Adaan, 5 Kulit, 5 Lenjer, 5 Telor).",
       media: [
         { type: 'image', url: '/pempek-20.jpg' }, { type: 'image', url: '/pempek-20-2.jpg' },
@@ -117,7 +118,7 @@ export default function CustomerLandingPage() {
       ]
     },
     { 
-      name: "Pempek Isi 15", price: 30000, normalPrice: 35000, img: "/pempek-15.jpg", 
+      name: "Pempek Isi 15", price: 33000, normalPrice: 36000, img: "/pempek-15.jpg", 
       desc: "Porsi nanggung yang pas buat nemenin kerja santai. (Terdiri dari: 4 Adaan, 4 Kulit, 4 Lenjer, 3 Telur).",
       media: [
         { type: 'image', url: '/pempek-15.jpg' }, { type: 'image', url: '/pempek-15-2.jpg' },
@@ -125,7 +126,7 @@ export default function CustomerLandingPage() {
       ]
     },
     { 
-      name: "Pempek Isi 10", price: 20000, normalPrice: 25000, img: "/pempek-10.jpg", 
+      name: "Pempek Isi 10", price: 23000, normalPrice: 30000, img: "/pempek-10.jpg", 
       desc: "Pilihan pas buat me-time atau ganjal perut saat malam. (Terdiri dari: 2 Adaan, 3 Kulit, 3 Lenjer, 2 Telur).",
       media: [
         { type: 'image', url: '/pempek-10.jpg' }, { type: 'image', url: '/pempek-10-2.jpg' },
@@ -133,7 +134,7 @@ export default function CustomerLandingPage() {
       ]
     },
     { 
-      name: "Pempek Besar isi 10", price: 35000, normalPrice: 45000, img: "/pempek-besar.jpg", 
+      name: "Pempek Besar isi 10", price: 40000, normalPrice: 46000, img: "/pempek-besar.jpg", 
       desc: "Ukuran jumbo, puas di setiap gigitan! (Terdiri dari: 2 Adaan, 3 Kulit, 3 Lenjer, 2 Telur).",
       media: [
         { type: 'image', url: '/pempek-besar.jpg' }, { type: 'image', url: '/pempek-besar-2.jpg' },
@@ -141,7 +142,7 @@ export default function CustomerLandingPage() {
       ]
     },
     { 
-      name: "Pempek Kapal Selam isi Telur", price: 28000, normalPrice: 35000, img: "/kapal-selam.jpg", 
+      name: "Pempek Kapal Selam isi Telur", price: 31000, normalPrice: 38000, img: "/kapal-selam.jpg", 
       // Kapal selam tidak diubah sesuai instruksi Bos
       desc: "Spesial buat pecinta telur. Sajian utama yang bikin perut langsung full dan happy!",
       media: [
@@ -150,7 +151,7 @@ export default function CustomerLandingPage() {
       ]
     },
     { 
-      name: "Tekwan", price: 35000, normalPrice: 40000, img: "/tekwan.jpg", 
+      name: "Tekwan", price: 36000, normalPrice: 40000, img: "/tekwan.jpg", 
       desc: "Penyelamat di saat hujan atau butuh yang hangat. Kuah kaldunya bikin rileks! (Berat: 400 gr).",
       media: [
         { type: 'image', url: '/tekwan.jpg' }, { type: 'image', url: '/tekwan-2.jpg' },
@@ -158,7 +159,7 @@ export default function CustomerLandingPage() {
       ]
     },
     { 
-      name: "Adaan+Kulit isi 12", price: 20000, normalPrice: 25000, img: "/adaan.jpg", 
+      name: "Adaan+Kulit isi 12", price: 23000, normalPrice: 27000, img: "/adaan.jpg", 
       desc: "Cemilan gurih favorit semua usia. Nggak mau berhenti ngunyah! (Terdiri dari: 6 Adaan, 6 Kulit).",
       media: [
         { type: 'image', url: '/adaan.jpg' }, { type: 'image', url: '/adaan-2.jpg' },
@@ -182,7 +183,7 @@ export default function CustomerLandingPage() {
   const BUNDLES = [
     { 
       name: "Paket Cicip (2 packs)", 
-      price: 44000, normalPrice: 48000, 
+      price: 50000, normalPrice: 54000, 
       img: "/paket-cicip.jpg", 
       desc: [
         "1x Pempek Isi 10 (Bisa ditukar Adaan+Kulit)",
@@ -195,7 +196,7 @@ export default function CustomerLandingPage() {
     },
     { 
       name: "Paket Keluarga (3 packs)", 
-      price: 80000, normalPrice: 90000, 
+      price: 89000, normalPrice: 99000, 
       img: "/paket-keluarga.jpg", 
       desc: [
         "1x Pempek Isi 20",
@@ -209,7 +210,7 @@ export default function CustomerLandingPage() {
     },
     { 
       name: "Paket Istimewa (5 packs)", 
-      price: 139000, normalPrice: 153000, 
+      price: 156000, normalPrice: 170000, 
       img: "/paket-istimewa.jpg", 
       desc: [
         "1x Pempek Isi 20",
@@ -234,6 +235,26 @@ export default function CustomerLandingPage() {
     { name: "Pak Ridwan", rating: 5, text: "Salah satu frozen pempek yang menurut saya kualitasnya bagus. Packaging rapi dan pas datang kondisinya masih fresh.", img: "/testi-5.jpg" },
     { name: "Mbak Yanti", rating: 5, text: "Baru keluar dari freezer terus direbus sebentar aja hasilnya tetap bagus. Nggak hancur, nggak berubah rasa.", img: "/testi-6.jpg" }
   ];
+
+  // === SENSOR AFFILIATE OTOMATIS ===
+  useEffect(() => {
+    // 1. Cek apakah ada kode '?ref=NAMA' di link website
+    const params = new URLSearchParams(window.location.search);
+    const refFromUrl = params.get('ref');
+    
+    if (refFromUrl) {
+      // 2. Kalau ada, simpan kodenya dan rekam di memori HP pembeli (localStorage)
+      // Jadi kalau pembeli iseng refresh halaman, kodenya nggak akan hilang!
+      setReferralCode(refFromUrl);
+      localStorage.setItem('umiwa_ref', refFromUrl);
+    } else {
+      // 3. Kalau nggak ada di link, coba cek memori HP, siapa tahu kemarin dia udah pernah klik
+      const savedRef = localStorage.getItem('umiwa_ref');
+      if (savedRef) {
+        setReferralCode(savedRef);
+      }
+    }
+  }, []);
 
   // AMBIL DATA STOK DARI SUPABASE SINKRONISASI
   useEffect(() => {
@@ -379,6 +400,12 @@ export default function CustomerLandingPage() {
     }
 
     let message = `Halo Admin Pempek Umiwa! 👋\nSaya mau order dong:\n\n`;
+    
+    // SISTEM OTOMATIS MENYELIPKAN KODE JIKA ADA
+    if (referralCode) {
+        message += `*KODE AFFILIATE:* ${referralCode.toUpperCase()}\n\n`;
+    }
+    
     message += `*Data Pemesan:*\nNama: ${custName}\nWA: ${custPhone}\n`;
     message += `Pengiriman: ${deliveryMode === 'delivery' ? '🛵 Dikirim' : '🏪 Ambil Sendiri'}\n`;
     
